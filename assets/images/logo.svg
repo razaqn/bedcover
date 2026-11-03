@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 70" width="340" height="70" fill="none">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE8A3"/>
+      <stop offset="35%" stop-color="#D4AF37"/>
+      <stop offset="70%" stop-color="#AA771C"/>
+      <stop offset="100%" stop-color="#E5C378"/>
+    </linearGradient>
+    <linearGradient id="goldGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3C4" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Luxury Crown & Bed Emblem -->
+  <g transform="translate(10, 10)">
+    <!-- Shield / Crest Background -->
+    <rect x="0" y="0" width="50" height="50" rx="14" fill="#14161D" stroke="url(#goldGradient)" stroke-width="1.8"/>
+    
+    <!-- Crown -->
+    <path d="M15 22 L19 28 L25 18 L31 28 L35 22 L36 34 L14 34 Z" fill="url(#goldGradient)"/>
+    <circle cx="15" cy="21" r="1.5" fill="#FFE8A3"/>
+    <circle cx="25" cy="17" r="1.8" fill="#FFE8A3"/>
+    <circle cx="35" cy="21" r="1.5" fill="#FFE8A3"/>
+
+    <!-- Bed / Mattress Silhouette -->
+    <rect x="12" y="36" width="26" height="4" rx="2" fill="url(#goldGradient)"/>
+    <path d="M15 33 Q25 31 35 33" stroke="url(#goldGradient)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    <circle cx="14" cy="42" r="1.2" fill="#D4AF37"/>
+    <circle cx="36" cy="42" r="1.2" fill="#D4AF37"/>
+  </g>
+
+  <!-- Typography: Luxury Gold & White -->
+  <text x="72" y="32" font-family="'Playfair Display', Georgia, serif" font-size="20" font-weight="700" letter-spacing="1.5" fill="url(#goldGradient)">BEDCOVER</text>
+  <text x="72" y="50" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="600" letter-spacing="3" fill="#E2E8F0">SUSAH BANGUN</text>
+  
+  <!-- Subtitle / Tagline Badge -->
+  <text x="235" y="49" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="500" letter-spacing="1" fill="#D4AF37">LUXURY BEDDING</text>
+  <circle cx="225" cy="46" r="2" fill="#D4AF37"/>
+</svg>
+

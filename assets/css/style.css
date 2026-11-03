@@ -218,7 +218,9 @@ h1, h2, h3, h4, h5, h6 {
 .logo-img {
   height: 48px;
   width: auto;
+  max-width: 260px;
   object-fit: contain;
+  display: block;
 }
 
 .header-nav {
@@ -1189,6 +1191,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer-logo {
   height: 48px;
+  width: auto;
+  max-width: 260px;
+  object-fit: contain;
+  display: block;
   margin-bottom: 16px;
 }
 

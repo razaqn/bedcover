@@ -1027,10 +1027,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnResetLogo) {
     btnResetLogo.addEventListener('click', () => {
+      const defaultUrl = window.BASE_URL ? window.BASE_URL.replace(/\/+$/, '') + '/assets/images/logo.svg' : '../assets/images/logo.svg';
       formLogoUrl.value = 'assets/images/logo.svg';
-      if (settingsLogoPreview) settingsLogoPreview.src = '../assets/images/logo.svg';
-      if (adminNavbarLogo) adminNavbarLogo.src = '../assets/images/logo.svg';
-      showToast('Logo direset ke default.');
+      if (settingsLogoPreview) settingsLogoPreview.src = defaultUrl;
+      if (adminNavbarLogo) adminNavbarLogo.src = defaultUrl;
+      showToast('Logo direset ke default. Jangan lupa klik Simpan Pengaturan.');
     });
   }
 

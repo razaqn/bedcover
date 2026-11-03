@@ -8,7 +8,8 @@ $settings = $settingsRepo->getAll();
 
 $appName = $settings['app_name'] ?? 'Bedcover Susah Bangun';
 $appTagline = $settings['app_tagline'] ?? 'Tidur Mewah & Nyenyak, Bangun Nanti Dulu ✨';
-$logoUrl = $settings['logo_url'] ?? 'assets/images/logo.svg';
+$logoUrl = format_logo_url($settings['logo_url'] ?? 'assets/images/logo.svg');
+$faviconUrl = format_favicon_url($settings['favicon_url'] ?? $settings['logo_url'] ?? '');
 
 $error = '';
 
@@ -38,6 +39,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="no-referrer">
   <title>Login Admin | <?= e($appName) ?></title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="<?= e($faviconUrl) ?>">
+  <link rel="apple-touch-icon" href="<?= e($faviconUrl) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -51,7 +56,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <div class="login-card">
       <div class="login-header">
         <a href="../" class="login-logo-link">
-          <img src="../<?= e($logoUrl) ?>" alt="<?= e($appName) ?>" class="login-logo-img">
+          <img src="<?= e($logoUrl) ?>" alt="<?= e($appName) ?>" class="login-logo-img">
         </a>
         <h1 class="login-title">Portal Admin Eksklusif</h1>
         <p class="login-subtitle">Masuk untuk mengelola katalog, kategori, dan banner</p>
@@ -69,7 +74,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
           <label for="username" class="form-label">Username</label>
           <div class="input-with-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan username" value="<?= e($_POST['username'] ?? 'admin') ?>" required autofocus>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan username"  required autofocus>
           </div>
         </div>
 
@@ -77,7 +82,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
           <label for="password" class="form-label">Password</label>
           <div class="input-with-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password" value="password123" required>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password" required>
           </div>
         </div>
 

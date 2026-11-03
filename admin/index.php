@@ -17,7 +17,8 @@ $sourceInfo = $productRepo->getSourceStatus();
 
 $appName = $settings['app_name'] ?? 'Bedcover Susah Bangun';
 $appTagline = $settings['app_tagline'] ?? 'Tidur Mewah & Nyenyak, Bangun Nanti Dulu ✨';
-$logoUrl = $settings['logo_url'] ?? 'assets/images/logo.svg';
+$logoUrl = format_logo_url($settings['logo_url'] ?? 'assets/images/logo.svg');
+$faviconUrl = format_favicon_url($settings['favicon_url'] ?? $settings['logo_url'] ?? '');
 
 // Stats
 $totalProducts = count($products);
@@ -32,6 +33,10 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="no-referrer">
   <title>Dashboard Admin | <?= e($appName) ?></title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="<?= e($faviconUrl) ?>">
+  <link rel="apple-touch-icon" href="<?= e($faviconUrl) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -45,7 +50,7 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
   <header class="admin-navbar">
     <div class="admin-nav-left">
       <a href="../" target="_blank" class="admin-brand" title="Buka Katalog Web">
-        <img src="../<?= e($logoUrl) ?>" alt="<?= e($appName) ?>" class="admin-nav-logo" id="adminNavbarLogo">
+        <img src="<?= e($logoUrl) ?>" alt="<?= e($appName) ?>" class="admin-nav-logo" id="adminNavbarLogo">
       </a>
       <div class="source-indicator-pill <?= $sourceInfo['active'] ? 'connected' : 'warning' ?>" id="sourceStatusIndicator" title="<?= e($sourceInfo['message']) ?>">
         <span class="pulse-dot"></span>
@@ -305,7 +310,7 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
               <div class="form-group">
                 <label class="form-label">Logo Web</label>
                 <div class="logo-preview-box">
-                  <img src="../<?= e($logoUrl) ?>" id="settingsLogoPreview" alt="Logo Preview" class="logo-preview-img">
+                  <img src="<?= e($logoUrl) ?>" id="settingsLogoPreview" alt="Logo Preview" class="logo-preview-img">
                   <div class="logo-actions">
                     <button type="button" class="btn btn-luxury-outline btn-sm" id="btnUploadLogo">Ganti Logo</button>
                     <button type="button" class="btn btn-luxury-outline btn-sm" id="btnResetLogo">Reset Default</button>

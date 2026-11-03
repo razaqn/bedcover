@@ -13,7 +13,8 @@ $banners = array_values(array_filter($settingsRepo->getBanners(), fn($b) => !emp
 
 $appName = $settings['app_name'] ?? 'Bedcover Susah Bangun';
 $appTagline = $settings['app_tagline'] ?? 'Tidur Mewah & Nyenyak, Bangun Nanti Dulu ✨';
-$logoUrl = $settings['logo_url'] ?? 'assets/images/logo.svg';
+$logoUrl = format_logo_url($settings['logo_url'] ?? 'assets/images/logo.svg');
+$faviconUrl = format_favicon_url($settings['favicon_url'] ?? $settings['logo_url'] ?? '');
 $waNumber = $settings['whatsapp_number'] ?? '6281234567890';
 $igUrl = $settings['instagram_url'] ?? 'https://instagram.com/bedcover.susahbangun';
 $address = $settings['address'] ?? 'Grand Gallery No. 8, Senopati, Jakarta Selatan';
@@ -40,6 +41,10 @@ foreach ($categories as $cat) {
   <meta name="referrer" content="no-referrer">
   <title><?= e($appName) ?> | Luxury Bedding & Bedcover E-Catalog</title>
   <meta name="description" content="<?= e($appTagline) ?> - Katalog Sprei & Bedcover Sutra Organik Tencel 80s, Katun Jepang Murni & Hotel Bintang Lima.">
+
+  <!-- Website Favicon & App Icons -->
+  <link rel="icon" type="image/svg+xml" href="<?= e($faviconUrl) ?>">
+  <link rel="apple-touch-icon" href="<?= e($faviconUrl) ?>">
 
   <!-- Google Fonts: Luxury Serif & Sans-serif -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

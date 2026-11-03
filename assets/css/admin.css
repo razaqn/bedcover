@@ -31,6 +31,9 @@ body.admin-body {
 .admin-nav-logo {
   height: 42px;
   width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  display: block;
 }
 
 .source-indicator-pill {
@@ -563,6 +566,9 @@ body.admin-body {
 .logo-preview-img {
   height: 50px;
   width: auto;
+  max-width: 240px;
+  object-fit: contain;
+  display: block;
 }
 
 .logo-actions {
@@ -780,7 +786,11 @@ body.admin-body {
 
 .login-logo-img {
   height: 52px;
-  margin-bottom: 16px;
+  width: auto;
+  max-width: 260px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 16px auto;
 }
 
 .login-title {

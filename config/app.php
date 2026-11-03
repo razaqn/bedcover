@@ -120,6 +120,34 @@ function format_image_url($url) {
 }
 
 /**
+ * Format Logo URL consistently across root, admin, and sub-pages
+ */
+function format_logo_url($url = '') {
+    $url = trim((string)$url);
+    if (empty($url) || $url === 'assets/images/logo.svg' || $url === '../assets/images/logo.svg') {
+        return base_url('assets/images/logo.svg');
+    }
+
+    if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://') || str_starts_with($url, '//')) {
+        return $url;
+    }
+
+    $clean = preg_replace('/^(\.\.\/|\.\/|\/)+/', '', $url);
+    return base_url($clean);
+}
+
+/**
+ * Format Favicon / Web Icon URL consistently
+ */
+function format_favicon_url($url = '') {
+    $url = trim((string)$url);
+    if (empty($url) || $url === 'assets/images/logo.svg' || $url === '../assets/images/logo.svg') {
+        return base_url('assets/images/favicon.svg');
+    }
+    return format_logo_url($url);
+}
+
+/**
  * Extract Google Drive file ID from a URL, image proxy link, or bare ID
  */
 function extract_drive_file_id($urlOrId) {

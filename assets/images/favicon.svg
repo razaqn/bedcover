@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="goldFavGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFEBB0"/>
+      <stop offset="35%" stop-color="#E5C378"/>
+      <stop offset="70%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#996D14"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E222D"/>
+      <stop offset="100%" stop-color="#0E1017"/>
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#D4AF37" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Luxury Crest Shield / App Icon Background -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#shieldGrad)" stroke="url(#goldFavGrad)" stroke-width="2.5"/>
+
+  <!-- Inner Soft Accent Border -->
+  <rect x="5.5" y="5.5" width="53" height="53" rx="13" stroke="rgba(212, 175, 55, 0.2)" stroke-width="1" fill="none"/>
+
+  <!-- Emblem Group with Subtle Glow -->
+  <g filter="url(#goldGlow)">
+    <!-- 5-Point Royal Crown -->
+    <path d="M19 28 L23.5 35 L32 21 L40.5 35 L45 28 L46 42 L18 42 Z" fill="url(#goldFavGrad)"/>
+    
+    <!-- Crown Jewels / Orbs -->
+    <circle cx="19" cy="27" r="2" fill="#FFF4D0"/>
+    <circle cx="32" cy="20" r="2.5" fill="#FFF4D0"/>
+    <circle cx="45" cy="27" r="2" fill="#FFF4D0"/>
+
+    <!-- Mattress & Bedcover Drape Fold -->
+    <rect x="15" y="44" width="34" height="5" rx="2.5" fill="url(#goldFavGrad)"/>
+    <path d="M18 40.5 Q32 37.5 46 40.5" stroke="url(#goldFavGrad)" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+    <!-- Subtle Bed Feet Accents -->
+    <circle cx="17.5" cy="52" r="1.5" fill="#D4AF37"/>
+    <circle cx="46.5" cy="52" r="1.5" fill="#D4AF37"/>
+  </g>
+</svg>

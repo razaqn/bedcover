@@ -529,7 +529,7 @@ if ($selectedProduct) {
 
   <!-- Initial Data for Frontend Client JS -->
   <script>
-    window.CATALOG_DATA = {
+    window.BEDCOVER_DATA = window.CATALOG_DATA = {
       products: <?= json_encode($products, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,
       categories: <?= json_encode($categories, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,
       settings: <?= json_encode($settings, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>,

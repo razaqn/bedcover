@@ -12,7 +12,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // Global Data from PHP Backend
-  const backendData = window.BEDCOVER_DATA || {};
+  const backendData = window.BEDCOVER_DATA || window.CATALOG_DATA || {};
   let products = backendData.products || [];
   let categories = backendData.categories || [];
   const waNumber = backendData.waNumber || '6281234567890';
@@ -190,12 +190,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
+  function decodeEntities(str) {
+    if (!str) return '';
+    const txt = document.createElement('textarea');
+    txt.innerHTML = String(str);
+    return txt.value;
+  }
+
   function strCaseEq(a, b) {
-    return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+    const cleanA = decodeEntities(a).trim().toLowerCase();
+    const cleanB = decodeEntities(b).trim().toLowerCase();
+    return cleanA === cleanB;
   }
 
   function strCaseContains(str, search) {
-    return String(str || '').toLowerCase().includes(String(search).toLowerCase());
+    const cleanStr = decodeEntities(str).toLowerCase();
+    const cleanSearch = decodeEntities(search).toLowerCase();
+    return cleanStr.includes(cleanSearch);
   }
 
   function sanitizeWaPhone(phone) {

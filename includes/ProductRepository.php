@@ -119,7 +119,25 @@ class ProductRepository {
             }
         }
         if (empty($sizes)) {
-            $sizes = ['Queen (160x200)', 'King (180x200)', 'Super King (200x200)'];
+            $sizes = ['180 x 200', '160 x 200', '120 x 200', '140 x 190', '190 x 220', '190 x 270', '95 x 140'];
+        }
+
+        // Parse heights (Tinggi: 20 cm, 25 cm, 30 cm, etc.)
+        $heights = [];
+        if (isset($data['heights'])) {
+            if (is_array($data['heights'])) {
+                $heights = array_values(array_filter(array_map('trim', $data['heights'])));
+            } elseif (is_string($data['heights'])) {
+                $decoded = json_decode($data['heights'], true);
+                if (is_array($decoded)) {
+                    $heights = array_values(array_filter(array_map('trim', $decoded)));
+                } else {
+                    $heights = array_values(array_filter(array_map('trim', explode(',', $data['heights']))));
+                }
+            }
+        }
+        if (empty($heights)) {
+            $heights = ['20 cm', '25 cm'];
         }
 
         $newProduct = [
@@ -133,6 +151,7 @@ class ProductRepository {
             'images' => array_values($images),
             'video' => $video,
             'sizes' => $sizes,
+            'heights' => $heights,
             'created_at' => $now,
             'updated_at' => $now
         ];
@@ -212,6 +231,21 @@ class ProductRepository {
             }
         }
 
+        // Parse heights
+        $heights = $existing['heights'] ?? ['20 cm', '25 cm'];
+        if (isset($data['heights'])) {
+            if (is_array($data['heights'])) {
+                $heights = array_values(array_filter(array_map('trim', $data['heights'])));
+            } elseif (is_string($data['heights'])) {
+                $decoded = json_decode($data['heights'], true);
+                if (is_array($decoded)) {
+                    $heights = array_values(array_filter(array_map('trim', $decoded)));
+                } else {
+                    $heights = array_values(array_filter(array_map('trim', explode(',', $data['heights']))));
+                }
+            }
+        }
+
         $updatedProduct = [
             'id' => $id,
             'name' => trim($data['name'] ?? $existing['name']),
@@ -223,6 +257,7 @@ class ProductRepository {
             'images' => array_values($images),
             'video' => $video,
             'sizes' => $sizes,
+            'heights' => $heights,
             'created_at' => $existing['created_at'] ?? $now,
             'updated_at' => $now
         ];
@@ -486,7 +521,8 @@ class ProductRepository {
             $images = is_array($product['images'] ?? null) ? $product['images'] : [];
             $formattedImages = array_map('format_image_url', $images);
             $video = !empty($product['video']) ? format_image_url($product['video']) : '';
-            $sizes = !empty($product['sizes']) && is_array($product['sizes']) ? $product['sizes'] : ['Queen (160x200)', 'King (180x200)', 'Super King (200x200)'];
+            $sizes = !empty($product['sizes']) && is_array($product['sizes']) ? $product['sizes'] : ['180 x 200', '160 x 200', '120 x 200', '140 x 190', '190 x 220', '190 x 270', '95 x 140'];
+            $heights = !empty($product['heights']) && is_array($product['heights']) ? $product['heights'] : ['20 cm', '25 cm'];
 
             return [
                 'id' => $product['id'] ?? generate_product_id(),
@@ -499,6 +535,7 @@ class ProductRepository {
                 'images' => $formattedImages,
                 'video' => $video,
                 'sizes' => $sizes,
+                'heights' => $heights,
                 'created_at' => $product['created_at'] ?? date('Y-m-d H:i:s'),
                 'updated_at' => $product['updated_at'] ?? date('Y-m-d H:i:s')
             ];

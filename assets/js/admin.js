@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const formShortDesc = document.getElementById('formShortDesc');
   const formFullDesc = document.getElementById('formFullDesc');
   const formCustomSizes = document.getElementById('formCustomSizes');
+  const formCustomHeights = document.getElementById('formCustomHeights');
   const formVideoUrl = document.getElementById('formVideoUrl');
   const videoFileInput = document.getElementById('videoFileInput');
   const btnUploadVideo = document.getElementById('btnUploadVideo');
@@ -280,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </span>
             <div class="size-badges-list">
               ${(Array.isArray(p.sizes) ? p.sizes : []).map(s => `<span class="size-badge-pill">${escapeHtml(s)}</span>`).join('')}
+              ${(Array.isArray(p.heights) ? p.heights : []).map(h => `<span class="size-badge-pill" style="border-color: rgba(255,255,255,0.2); color: #cbd5e1;">T: ${escapeHtml(h)}</span>`).join('')}
             </div>
           </td>
           <td>
@@ -383,7 +385,37 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    return selected.length > 0 ? selected : ['Queen (160x200)', 'King (180x200)'];
+    return selected.length > 0 ? selected : ['180 x 200', '160 x 200'];
+  }
+
+  function setFormHeights(heightsArray = []) {
+    const checkboxes = document.querySelectorAll('input[name="product_heights[]"]');
+    const standardValues = [];
+    checkboxes.forEach(cb => {
+      standardValues.push(cb.value.toLowerCase());
+      const isMatch = heightsArray.some(h => h.toLowerCase() === cb.value.toLowerCase());
+      cb.checked = isMatch;
+    });
+
+    const customHeights = heightsArray.filter(h => !standardValues.includes(h.toLowerCase()));
+    if (formCustomHeights) {
+      formCustomHeights.value = customHeights.join(', ');
+    }
+  }
+
+  function getFormHeights() {
+    const selected = [];
+    const checkboxes = document.querySelectorAll('input[name="product_heights[]"]:checked');
+    checkboxes.forEach(cb => selected.push(cb.value));
+
+    if (formCustomHeights && formCustomHeights.value.trim()) {
+      const customs = formCustomHeights.value.split(',').map(h => h.trim()).filter(Boolean);
+      customs.forEach(c => {
+        if (!selected.includes(c)) selected.push(c);
+      });
+    }
+
+    return selected.length > 0 ? selected : ['20 cm', '25 cm'];
   }
 
   function openAddModal() {
@@ -395,7 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formVideoUrl.value = '';
     updateVideoPreview('');
     renderFormImages();
-    setFormSizes(['Queen (160x200)', 'King (180x200)', 'Super King (200x200)']);
+    setFormSizes(['180 x 200', '160 x 200', '120 x 200']);
+    setFormHeights(['25 cm', '20 cm']);
     productFormModal.classList.add('active');
   }
 
@@ -420,8 +453,11 @@ document.addEventListener('DOMContentLoaded', () => {
     formImages = Array.isArray(product.images) ? [...product.images] : [];
     renderFormImages();
 
-    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['Queen (160x200)', 'King (180x200)'];
+    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200', '160 x 200'];
     setFormSizes(productSizes);
+
+    const productHeights = Array.isArray(product.heights) && product.heights.length > 0 ? product.heights : ['25 cm', '20 cm'];
+    setFormHeights(productHeights);
 
     productFormModal.classList.add('active');
   }
@@ -451,8 +487,11 @@ document.addEventListener('DOMContentLoaded', () => {
     formImages = Array.isArray(product.images) ? [...product.images] : [];
     renderFormImages();
 
-    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['Queen (160x200)', 'King (180x200)'];
+    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200', '160 x 200'];
     setFormSizes(productSizes);
+
+    const productHeights = Array.isArray(product.heights) && product.heights.length > 0 ? product.heights : ['25 cm', '20 cm'];
+    setFormHeights(productHeights);
 
     productFormModal.classList.add('active');
     formName.focus();
@@ -594,6 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
         full_desc: formFullDesc.value.trim(),
         video: formVideoUrl.value.trim(),
         sizes: getFormSizes(),
+        heights: getFormHeights(),
         images: formImages.length > 0 ? formImages : [
           'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1000'
         ]
@@ -676,25 +716,49 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // CATEGORY MANAGEMENT
   // ==========================================
+  const categoryFormTitle = document.getElementById('categoryFormTitle');
+  const editCategoryOldName = document.getElementById('editCategoryOldName');
+  const btnSubmitCategory = document.getElementById('btnSubmitCategory');
+  const btnCancelEditCat = document.getElementById('btnCancelEditCat');
+
+  function resetCategoryForm() {
+    if (addCategoryForm) addCategoryForm.reset();
+    if (editCategoryOldName) editCategoryOldName.value = '';
+    if (newCategoryImage) newCategoryImage.value = '';
+    if (categoryCoverPreviewWrap) categoryCoverPreviewWrap.style.display = 'none';
+    if (categoryFormTitle) categoryFormTitle.textContent = 'Tambah Kategori Baru';
+    if (btnSubmitCategory) btnSubmitCategory.querySelector('span').textContent = 'Simpan Kategori';
+    if (btnCancelEditCat) btnCancelEditCat.style.display = 'none';
+  }
+
+  if (btnCancelEditCat) {
+    btnCancelEditCat.addEventListener('click', resetCategoryForm);
+  }
+
   function renderCategoriesList() {
     if (!categoryItemsList) return;
 
     categoryItemsList.innerHTML = categories.map(cat => {
       const catName = is_array_obj(cat) ? cat.name : String(cat);
       const catImg = is_array_obj(cat) ? (cat.image || '') : '';
+      const catDesc = is_array_obj(cat) ? (cat.description || '') : '';
       const thumb = formatImageUrl(catImg || 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=200');
       const count = products.filter(p => (p.category || '').toLowerCase() === catName.toLowerCase()).length;
 
       return `
-        <div class="category-list-item">
+        <div class="category-list-item" data-category="${escapeHtml(catName)}">
           <div class="cat-item-left">
             <img src="${escapeHtml(thumb)}" alt="${escapeHtml(catName)}" class="cat-item-thumb" referrerpolicy="no-referrer">
             <div>
               <div class="cat-item-name">${escapeHtml(catName)}</div>
               <div class="cat-item-count">${count} Koleksi Terdaftar</div>
+              ${catDesc ? `<div style="font-size: 0.72rem; color: #9ca3af; margin-top: 2px;">${escapeHtml(catDesc)}</div>` : ''}
             </div>
           </div>
           <div class="action-btns">
+            <button type="button" class="btn-icon btn-edit-cat" data-name="${escapeHtml(catName)}" title="Edit Kategori">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
             <button type="button" class="btn-icon delete btn-delete-cat" data-name="${escapeHtml(catName)}" title="Hapus Kategori">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
@@ -702,6 +766,42 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     }).join('');
+
+    // Attach Category Edit Event
+    categoryItemsList.querySelectorAll('.btn-edit-cat').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.getAttribute('data-name');
+        const cat = categories.find(c => {
+          const cName = is_array_obj(c) ? c.name : String(c);
+          return cName.toLowerCase() === name.toLowerCase();
+        });
+        if (!cat) return;
+
+        const catName = is_array_obj(cat) ? cat.name : String(cat);
+        const catDesc = is_array_obj(cat) ? (cat.description || '') : '';
+        const catImg = is_array_obj(cat) ? (cat.image || '') : '';
+
+        if (editCategoryOldName) editCategoryOldName.value = catName;
+        if (newCategoryName) newCategoryName.value = catName;
+        if (newCategoryDesc) newCategoryDesc.value = catDesc;
+        if (newCategoryImage) newCategoryImage.value = catImg;
+
+        if (catImg && categoryCoverPreviewWrap && categoryCoverPreview) {
+          categoryCoverPreview.src = formatImageUrl(catImg);
+          categoryCoverPreviewWrap.style.display = 'block';
+        } else if (categoryCoverPreviewWrap) {
+          categoryCoverPreviewWrap.style.display = 'none';
+        }
+
+        if (categoryFormTitle) categoryFormTitle.textContent = `Edit Kategori: "${catName}"`;
+        if (btnSubmitCategory) btnSubmitCategory.querySelector('span').textContent = 'Perbarui Kategori';
+        if (btnCancelEditCat) btnCancelEditCat.style.display = 'block';
+
+        if (addCategoryForm) {
+          addCategoryForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
 
     // Attach Category Delete
     categoryItemsList.querySelectorAll('.btn-delete-cat').forEach(btn => {
@@ -718,6 +818,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const res = await response.json();
           if (res.success) {
             categories = res.data;
+            if (editCategoryOldName && editCategoryOldName.value === name) {
+              resetCategoryForm();
+            }
             updateCategoryDropdowns();
             renderCategoriesList();
             updateStats();
@@ -763,39 +866,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Add Category Submit
+  // Add / Edit Category Submit
   if (addCategoryForm) {
     addCategoryForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = newCategoryName.value.trim();
       const desc = newCategoryDesc.value.trim();
       const image = newCategoryImage.value.trim();
+      const oldName = editCategoryOldName ? editCategoryOldName.value.trim() : '';
 
       if (!name) return;
+
+      const isEditing = !!oldName;
+      const actionName = isEditing ? 'update_category' : 'add_category';
+      const payload = {
+        _action: actionName,
+        name: name,
+        description: desc,
+        image: image
+      };
+      if (isEditing) {
+        payload.old_name = oldName;
+      }
 
       try {
         const response = await authFetch('../api/settings.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            _action: 'add_category',
-            name: name,
-            description: desc,
-            image: image
-          })
+          body: JSON.stringify(payload)
         });
         const res = await response.json();
         if (res.success) {
           categories = res.data;
-          addCategoryForm.reset();
-          newCategoryImage.value = '';
-          categoryCoverPreviewWrap.style.display = 'none';
+          
+          if (isEditing) {
+            // Update local products categories too
+            products.forEach(p => {
+              if ((p.category || '').toLowerCase() === oldName.toLowerCase()) {
+                p.category = name;
+              }
+            });
+            renderTable();
+          }
+
+          resetCategoryForm();
           updateCategoryDropdowns();
           renderCategoriesList();
           updateStats();
-          showToast(`Kategori "${name}" berhasil ditambahkan! 👑`);
+          showToast(isEditing ? `Kategori "${name}" berhasil diperbarui!` : `Kategori "${name}" berhasil ditambahkan! 👑`);
         } else {
-          showToast(res.message || 'Gagal menambahkan kategori.', 'error');
+          showToast(res.message || 'Gagal menyimpan kategori.', 'error');
         }
       } catch (err) {
         showToast('Error: ' + err.message, 'error');

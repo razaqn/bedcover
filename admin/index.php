@@ -214,10 +214,12 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
         </div>
 
         <div class="category-manager-grid">
-          <!-- Add Category Form -->
+          <!-- Add / Edit Category Form -->
           <div class="category-add-box">
-            <h3 class="box-title">Tambah Kategori Baru</h3>
+            <h3 class="box-title" id="categoryFormTitle">Tambah Kategori Baru</h3>
             <form id="addCategoryForm">
+              <input type="hidden" id="editCategoryOldName" value="">
+
               <div class="form-group">
                 <label for="newCategoryName" class="form-label">Nama Kategori *</label>
                 <input type="text" id="newCategoryName" class="form-control" placeholder="Contoh: Egyptian Cotton 1000TC" required>
@@ -242,8 +244,11 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-luxury-primary btn-block">
+              <button type="submit" class="btn btn-luxury-primary btn-block" id="btnSubmitCategory">
                 <span>Simpan Kategori</span>
+              </button>
+              <button type="button" class="btn btn-luxury-outline btn-block" id="btnCancelEditCat" style="display: none; margin-top: 8px;">
+                <span>Batal Edit</span>
               </button>
             </form>
           </div>
@@ -412,28 +417,66 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
             <label class="form-label">Pilihan Ukuran Bedcover Tersedia *</label>
             <div class="size-options-container" id="adminSizeSelector">
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="Single (120x200)">
-                <span>Single (120x200)</span>
+                <input type="checkbox" name="product_sizes[]" value="180 x 200">
+                <span>180 x 200</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="Queen (160x200)">
-                <span>Queen (160x200)</span>
+                <input type="checkbox" name="product_sizes[]" value="160 x 200">
+                <span>160 x 200</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="King (180x200)">
-                <span>King (180x200)</span>
+                <input type="checkbox" name="product_sizes[]" value="120 x 200">
+                <span>120 x 200</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="Super King (200x200)">
-                <span>Super King (200x200)</span>
+                <input type="checkbox" name="product_sizes[]" value="95 x 140">
+                <span>95 x 140</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="Extra King (200x220)">
-                <span>Extra King (200x220)</span>
+                <input type="checkbox" name="product_sizes[]" value="140 x 190">
+                <span>140 x 190</span>
+              </label>
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_sizes[]" value="190 x 220">
+                <span>190 x 220</span>
+              </label>
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_sizes[]" value="190 x 270">
+                <span>190 x 270</span>
               </label>
             </div>
             <div style="margin-top: 8px;">
-              <input type="text" id="formCustomSizes" class="form-control" placeholder="Ukuran Tambahan (pisahkan koma, contoh: Kustom Bayi (70x120), Super Single (140x200))">
+              <input type="text" id="formCustomSizes" class="form-control" placeholder="Ukuran Tambahan Lainnya (pisahkan koma)">
+            </div>
+          </div>
+
+          <!-- Pilihan Tinggi Kasur Tersedia -->
+          <div class="form-group">
+            <label class="form-label">Pilihan Tinggi Kasur / Bedcover (Tinggi) *</label>
+            <div class="size-options-container" id="adminHeightSelector">
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_heights[]" value="25 cm">
+                <span>25 cm</span>
+              </label>
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_heights[]" value="20 cm">
+                <span>20 cm</span>
+              </label>
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_heights[]" value="30 cm">
+                <span>30 cm</span>
+              </label>
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_heights[]" value="35 cm">
+                <span>35 cm</span>
+              </label>
+              <label class="size-checkbox-pill">
+                <input type="checkbox" name="product_heights[]" value="40 cm">
+                <span>40 cm</span>
+              </label>
+            </div>
+            <div style="margin-top: 8px;">
+              <input type="text" id="formCustomHeights" class="form-control" placeholder="Tinggi Tambahan Lainnya (pisahkan koma, contoh: 15 cm, 45 cm)">
             </div>
           </div>
 

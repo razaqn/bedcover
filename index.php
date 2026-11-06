@@ -32,6 +32,30 @@ foreach ($categories as $cat) {
     }
     $categoryCounts[$catName] = $count;
 }
+
+// Check for deep-linked product for dynamic Open Graph & rich link previews
+$selectedProduct = null;
+$reqProductId = $_GET['product'] ?? $_GET['id'] ?? null;
+if ($reqProductId) {
+    foreach ($products as $p) {
+        if ($p['id'] === $reqProductId) {
+            $selectedProduct = $p;
+            break;
+        }
+    }
+}
+
+if ($selectedProduct) {
+    $pageTitle = $selectedProduct['name'] . " — " . $appName;
+    $pageDesc = !empty($selectedProduct['short_desc']) ? $selectedProduct['short_desc'] : (!empty($selectedProduct['full_desc']) ? substr(strip_tags($selectedProduct['full_desc']), 0, 160) : $appTagline);
+    $ogImg = !empty($selectedProduct['images'][0]) ? format_image_url($selectedProduct['images'][0]) : (!empty($selectedProduct['image']) ? format_image_url($selectedProduct['image']) : $logoUrl);
+    $canonicalUrl = base_url('?product=' . urlencode($selectedProduct['id']));
+} else {
+    $pageTitle = $appName . " | Luxury Bedding & Bedcover E-Catalog";
+    $pageDesc = $appTagline . " - Katalog Sprei & Bedcover Sutra Organik Tencel 80s, Katun Jepang Murni & Hotel Bintang Lima.";
+    $ogImg = $logoUrl;
+    $canonicalUrl = base_url();
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -39,8 +63,22 @@ foreach ($categories as $cat) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="referrer" content="no-referrer">
-  <title><?= e($appName) ?> | Luxury Bedding & Bedcover E-Catalog</title>
-  <meta name="description" content="<?= e($appTagline) ?> - Katalog Sprei & Bedcover Sutra Organik Tencel 80s, Katun Jepang Murni & Hotel Bintang Lima.">
+  <title><?= e($pageTitle) ?></title>
+  <meta name="description" content="<?= e($pageDesc) ?>">
+
+  <!-- Open Graph Meta Tags (for WhatsApp Link Preview) -->
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="<?= e($pageTitle) ?>">
+  <meta property="og:description" content="<?= e($pageDesc) ?>">
+  <meta property="og:image" content="<?= e($ogImg) ?>">
+  <meta property="og:url" content="<?= e($canonicalUrl) ?>">
+  <meta property="og:site_name" content="<?= e($appName) ?>">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= e($pageTitle) ?>">
+  <meta name="twitter:description" content="<?= e($pageDesc) ?>">
+  <meta name="twitter:image" content="<?= e($ogImg) ?>">
 
   <!-- Website Favicon & App Icons -->
   <link rel="icon" type="image/svg+xml" href="<?= e($faviconUrl) ?>">
@@ -96,6 +134,13 @@ foreach ($categories as $cat) {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
           <span class="btn-text-desktop">Favorit</span>
           <span class="wishlist-badge" id="wishlistCount">0</span>
+        </button>
+
+        <!-- Cart Button with Counter -->
+        <button type="button" class="action-btn cart-btn" id="btnHeaderCart" title="Keranjang Belanja">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="btn-text-desktop">Keranjang</span>
+          <span class="cart-badge" id="cartCount">0</span>
         </button>
       </div>
     </div>
@@ -247,17 +292,57 @@ foreach ($categories as $cat) {
             <span class="catalog-count-pill" id="catalogCountPill"><?= count($products) ?> Produk</span>
           </div>
 
-          <!-- Quick Category Switch Pills while in Product View -->
-          <div class="catalog-filter-bar">
-            <div class="category-pills-scroll" id="categoryPillsScroll">
-              <button type="button" class="cat-pill active" data-category="all">Semua Kategori</button>
-              <?php foreach ($categories as $cat): ?>
-                <?php $catName = is_array($cat) ? $cat['name'] : (string)$cat; ?>
-                <button type="button" class="cat-pill" data-category="<?= e($catName) ?>">
-                  <?= e($catName) ?>
-                  <span class="pill-num"><?= $categoryCounts[$catName] ?? 0 ?></span>
-                </button>
-              <?php endforeach; ?>
+          <!-- Responsive Category & Specs Filter Select Bar -->
+          <div class="catalog-filters-container">
+            <div class="filters-grid-boxes">
+              <!-- 1. Category Select Dropdown -->
+              <div class="filter-box-item">
+                <label for="categorySelectDropdown" class="filter-box-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                  <span>Pilih Kategori:</span>
+                </label>
+                <select id="categorySelectDropdown" class="luxury-filter-select">
+                  <option value="all">👑 Semua Kategori</option>
+                  <?php foreach ($categories as $cat): ?>
+                    <?php $catName = is_array($cat) ? $cat['name'] : (string)$cat; ?>
+                    <option value="<?= e($catName) ?>"><?= e($catName) ?> (<?= $categoryCounts[$catName] ?? 0 ?>)</option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+
+              <!-- 2. Size Select Dropdown -->
+              <div class="filter-box-item">
+                <label for="filterSizeSelect" class="filter-box-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                  <span>Filter Ukuran:</span>
+                </label>
+                <select id="filterSizeSelect" class="luxury-filter-select">
+                  <option value="all">Semua Ukuran Kasur</option>
+                  <option value="180 x 200">180 x 200 (King)</option>
+                  <option value="160 x 200">160 x 200 (Queen)</option>
+                  <option value="120 x 200">120 x 200 (Single)</option>
+                  <option value="95 x 140">95 x 140</option>
+                  <option value="140 x 190">140 x 190</option>
+                  <option value="190 x 220">190 x 220</option>
+                  <option value="190 x 270">190 x 270</option>
+                </select>
+              </div>
+
+              <!-- 3. Height Select Dropdown -->
+              <div class="filter-box-item">
+                <label for="filterHeightSelect" class="filter-box-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 8 12 3 17 8"></polyline><polyline points="7 16 12 21 17 16"></polyline><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                  <span>Filter Tinggi:</span>
+                </label>
+                <select id="filterHeightSelect" class="luxury-filter-select">
+                  <option value="all">Semua Tinggi Kasur</option>
+                  <option value="25 cm">25 cm</option>
+                  <option value="20 cm">20 cm</option>
+                  <option value="30 cm">30 cm</option>
+                  <option value="35 cm">35 cm</option>
+                  <option value="40 cm">40 cm</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -347,8 +432,15 @@ foreach ($categories as $cat) {
     </div>
   </footer>
 
-  <!-- STICKY FLOATING SOCIAL MEDIA BUTTONS (IG & WA) -->
+  <!-- STICKY FLOATING SOCIAL MEDIA & CART BUTTONS (IG, WA & CART) -->
   <div class="sticky-social-wrapper" id="stickySocials">
+    <!-- Floating Cart Button -->
+    <button type="button" class="sticky-btn cart-float" id="btnFloatingCart" title="Buka Keranjang Belanja">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+      <span class="floating-cart-badge" id="floatingCartCount">0</span>
+      <span class="sticky-tooltip">Keranjang</span>
+    </button>
+
     <!-- Instagram Floating Button -->
     <a href="<?= e($igUrl) ?>" target="_blank" rel="noopener" class="sticky-btn ig" title="Kunjungi Instagram Kami">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
@@ -369,6 +461,48 @@ foreach ($categories as $cat) {
 
       <div class="modal-detail-content" id="modalDetailContent">
         <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SHOPPING CART DRAWER / MODAL
+       ========================================== -->
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay">
+    <div class="cart-drawer" id="cartDrawer">
+      <div class="cart-drawer-header">
+        <div class="cart-drawer-title-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <h3 class="cart-drawer-title">Keranjang Belanja</h3>
+          <span class="cart-total-badge" id="cartDrawerBadge">0</span>
+        </div>
+        <button type="button" class="btn-close-drawer" id="btnCloseCartDrawer" aria-label="Tutup Keranjang">&times;</button>
+      </div>
+
+      <!-- Select All Toolbar -->
+      <div class="cart-toolbar" id="cartToolbar" style="display: none;">
+        <label class="cart-checkbox-wrap">
+          <input type="checkbox" id="cartSelectAllCheckbox" checked>
+          <span>Pilih Semua (<span id="cartSelectedCountText">0</span>)</span>
+        </label>
+        <button type="button" class="btn-clear-cart" id="btnClearSelectedCart">Hapus Terpilih</button>
+      </div>
+
+      <!-- Cart Items List Container -->
+      <div class="cart-drawer-body" id="cartDrawerBody">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Cart Footer / Checkout with WA -->
+      <div class="cart-drawer-footer" id="cartDrawerFooter" style="display: none;">
+        <div class="cart-summary-row">
+          <span class="summary-label">Total Dipilih:</span>
+          <span class="summary-price" id="cartTotalPrice">Rp 0</span>
+        </div>
+        <button type="button" class="btn btn-luxury-primary btn-block btn-cart-whatsapp" id="btnCartWhatsApp">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          <span id="cartWhatsAppLabel">Tanya Admin via WhatsApp (0 Produk)</span>
+        </button>
       </div>
     </div>
   </div>

@@ -6,17 +6,25 @@
         "price": 1650000,
         "status": "Ready Stock",
         "short_desc": "Sutra Tencel 80s serat eucalyptus murni dengan kilau champagne gold mewah dan sensasi dingin sejuk alami.",
-        "full_desc": "Koleksi mahakarya dari Bedcover Susah Bangun. Menghadirkan kemewahan sejati bahan 100% Tencel Lyocell 80s bersertifikasi Lenzing Austria. Tekstur selembut sutra, berkilau anggun di bawah cahaya ruangan, dan memiliki kemampuan termoregulasi yang membuat kasur tetap sejuk meski cuaca panas.\n\nIsi Paket Eksklusif (Ukuran King 200x200cm / Super King):\n- 1 Bedcover Quilted Tebal Empuk (240x250cm)\n- 1 Sprei Fitted Karet Keliling 360° (Tinggi Kasur 40cm)\n- 2 Sarung Bantal Oxford Frame dengan lis Gold\n- 2 Sarung Guling dengan Tali Satin Terpasang\n- 1 Dustbag Kulit Sintetis Eksklusif untuk Penyimpanan",
+        "full_desc": "Koleksi mahakarya dari Bedcover Susah Bangun. Menghadirkan kemewahan sejati bahan 100% Tencel Lyocell 80s bersertifikasi Lenzing Austria. Tekstur selembut sutra, berkilau anggun di bawah cahaya ruangan, dan memiliki kemampuan termoregulasi yang membuat kasur tetap sejuk meski cuaca panas.\n\nIsi Paket Eksklusif:\n- 1 Bedcover Quilted Tebal Empuk (240x250cm)\n- 1 Sprei Fitted Karet Keliling 360° (Pilihan tinggi 20 cm / 25 cm / 30 cm)\n- 2 Sarung Bantal Oxford Frame dengan lis Gold\n- 2 Sarung Guling dengan Tali Satin Terpasang\n- 1 Dustbag Kulit Sintetis Eksklusif untuk Penyimpanan",
         "images": [
             "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1000&q=80",
             "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1000&q=80"
         ],
         "video": "",
         "sizes": [
-            "Single (120x200)"
+            "180 x 200",
+            "160 x 200",
+            "120 x 200",
+            "140 x 190",
+            "190 x 220"
+        ],
+        "heights": [
+            "25 cm",
+            "20 cm"
         ],
         "created_at": "2026-11-01 10:00:00",
-        "updated_at": "2026-11-03 19:44:00"
+        "updated_at": "2026-11-06 10:00:00"
     },
     {
         "id": "BED-MIDNIGHT-02",
@@ -25,20 +33,25 @@
         "price": 1580000,
         "status": "Ready Stock",
         "short_desc": "Perpaduan hitam obsidian pekat berbalut bordir benang emas murni. Sangat dramatis dan maskulin berkelas.",
-        "full_desc": "Dibuat khusus untuk Anda yang menyukai interior kamar luxury bernuansa dark aesthetic modern. Warna hitam pekat elegan yang tidak luntur dan berkilau halus saat terkena pantulan lampu tidur. Dihiasi bordiran mahkota dan garis simetris emas di bagian pinggir bedcover.\n\nSpesifikasi Produk:\n- Material: 100% Tencel Eco-Friendly 60s High Density\n- Ukuran Kasur: Single, Queen, King, Super King\n- Bedcover: Isi Microfiber Silikon Grade A (berat 3.8kg yang pas memeluk tubuh saat tidur)\n- Isi: 1 Bedcover, 1 Sprei, 2 Sarung Bantal, 2 Sarung Guling",
+        "full_desc": "Dibuat khusus untuk Anda yang menyukai interior kamar luxury bernuansa dark aesthetic modern. Warna hitam pekat elegan yang tidak luntur dan berkilau halus saat terkena pantulan lampu tidur. Dihiasi bordiran mahkota dan garis simetris emas di bagian pinggir bedcover.\n\nSpesifikasi Produk:\n- Material: 100% Tencel Eco-Friendly 60s High Density\n- Ukuran Kasur: 180 x 200, 160 x 200, 120 x 200, 190 x 220, 190 x 270\n- Tinggi Kasur: 20 cm, 25 cm\n- Bedcover: Isi Microfiber Silikon Grade A (berat 3.8kg yang pas memeluk tubuh saat tidur)\n- Isi: 1 Bedcover, 1 Sprei, 2 Sarung Bantal, 2 Sarung Guling",
         "images": [
             "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1000&q=80",
             "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80"
         ],
         "video": "",
         "sizes": [
-            "Single (120x200)",
-            "Queen (160x200)",
-            "King (180x200)",
-            "Super King (200x200)"
+            "180 x 200",
+            "160 x 200",
+            "120 x 200",
+            "190 x 220",
+            "190 x 270"
+        ],
+        "heights": [
+            "25 cm",
+            "20 cm"
         ],
         "created_at": "2026-11-01 11:30:00",
-        "updated_at": "2026-11-03 12:00:00"
+        "updated_at": "2026-11-06 10:00:00"
     },
     {
         "id": "BED-JAPANESE-03",
@@ -47,19 +60,25 @@
         "price": 980000,
         "status": "Ready Stock",
         "short_desc": "Katun Jepang Murni 400TC tenunan rapat dengan motif floral botanical eksklusif warna soft gold & charcoal.",
-        "full_desc": "Sensasi tidur yang sejuk dan breathable dengan Katun Jepang Asli impor kualitas terbaik. Tidak licin, tidak mudah kusut, dan semakin lembut setelah dicuci berulang kali. Motif floral artistik Kyoto memberikan ketenangan dan kenyamanan seperti menginap di Ryokan mewah Jepang.\n\nKelengkapan Paket:\n- 1 Bedcover Motif Bolak-balik (Reversible Two-Tone)\n- 1 Sprei Fitted Karet Sudut Anti-Geser (Tinggi 35cm)\n- 2 Sarung Bantal Renda Minimalis\n- 2 Sarung Guling Karet Praktis",
+        "full_desc": "Sensasi tidur yang sejuk dan breathable dengan Katun Jepang Asli impor kualitas terbaik. Tidak licin, tidak mudah kusut, dan semakin lembut setelah dicuci berulang kali. Motif floral artistik Kyoto memberikan ketenangan dan kenyamanan seperti menginap di Ryokan mewah Jepang.\n\nKelengkapan Paket:\n- 1 Bedcover Motif Bolak-balik (Reversible Two-Tone)\n- 1 Sprei Fitted Karet Sudut Anti-Geser (Pilihan tinggi 20 cm / 25 cm)\n- 2 Sarung Bantal Renda Minimalis\n- 2 Sarung Guling Karet Praktis",
         "images": [
             "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80",
             "https://images.unsplash.com/photo-1582582621959-48d27397dc69?auto=format&fit=crop&w=1000&q=80"
         ],
         "video": "",
         "sizes": [
-            "Single (120x200)",
-            "Queen (160x200)",
-            "King (180x200)"
+            "180 x 200",
+            "160 x 200",
+            "120 x 200",
+            "140 x 190",
+            "95 x 140"
+        ],
+        "heights": [
+            "20 cm",
+            "25 cm"
         ],
         "created_at": "2026-11-02 09:15:00",
-        "updated_at": "2026-11-02 09:15:00"
+        "updated_at": "2026-11-06 10:00:00"
     },
     {
         "id": "BED-HOTEL-04",
@@ -68,20 +87,24 @@
         "price": 1850000,
         "status": "Pre-Order H-3",
         "short_desc": "Standar hotel bintang 5 termewah di dunia. Tenunan Jacquard Damask 1000TC dengan ketebalan ekstra empuk.",
-        "full_desc": "Ingin merasakan tidur di kamar Presidential Suite hotel berbintang setiap malam di rumah Anda? Inilah jawabannya. Menampilkan pola garis klasik damask dengan aksen kemilau gold yang agung. Kain luar tebal namun tetap dingin, dipadukan isian bulu angsa sintetis micro-down yang membal lembut.\n\nBisa dipesan dengan Bordir Inisial Nama (Monogram Custom) di bagian sarung bantal!\n\nIsi Paket:\n- 1 Bedcover Ultra Fluffy Jumbo (260x240cm)\n- 1 Sprei Fitted Karet Premium (Tinggi Kasur hingga 45cm)\n- 2 Sarung Bantal King Size (55x75cm) dengan Frame Gold\n- 2 Sarung Guling Jumbo (38x105cm)",
+        "full_desc": "Ingin merasakan tidur di kamar Presidential Suite hotel berbintang setiap malam di rumah Anda? Inilah jawabannya. Menampilkan pola garis klasik damask dengan aksen kemilau gold yang agung. Kain luar tebal namun tetap dingin, dipadukan isian bulu angsa sintetis micro-down yang membal lembut.\n\nBisa dipesan dengan Bordir Inisial Nama (Monogram Custom) di bagian sarung bantal!\n\nIsi Paket:\n- 1 Bedcover Ultra Fluffy Jumbo (260x240cm)\n- 1 Sprei Fitted Karet Premium (Tinggi Kasur 25 cm / 20 cm)\n- 2 Sarung Bantal King Size (55x75cm) dengan Frame Gold\n- 2 Sarung Guling Jumbo (38x105cm)",
         "images": [
             "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80",
             "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=80"
         ],
         "video": "",
         "sizes": [
-            "Queen (160x200)",
-            "King (180x200)",
-            "Super King (200x200)",
-            "Extra King (200x220)"
+            "190 x 270",
+            "190 x 220",
+            "180 x 200",
+            "160 x 200"
+        ],
+        "heights": [
+            "25 cm",
+            "20 cm"
         ],
         "created_at": "2026-11-02 14:00:00",
-        "updated_at": "2026-11-02 14:00:00"
+        "updated_at": "2026-11-06 10:00:00"
     },
     {
         "id": "BED-DUVET-05",
@@ -97,13 +120,17 @@
         ],
         "video": "",
         "sizes": [
-            "Single (120x200)",
-            "Queen (160x200)",
-            "King (180x200)",
-            "Super King (200x200)"
+            "180 x 200",
+            "160 x 200",
+            "120 x 200",
+            "140 x 190"
+        ],
+        "heights": [
+            "25 cm",
+            "20 cm"
         ],
         "created_at": "2026-11-02 16:30:00",
-        "updated_at": "2026-11-02 16:30:00"
+        "updated_at": "2026-11-06 10:00:00"
     },
     {
         "id": "BED-FITTED-06",
@@ -112,19 +139,23 @@
         "price": 750000,
         "status": "Ready Stock",
         "short_desc": "Set sprei elastis fitted 360° dengan karet tebal anti-copot, dilengkapi 2 sarung bantal & 2 sarung guling bordir.",
-        "full_desc": "Bagi Anda yang sudah memiliki bedcover namun membutuhkan sprei cadangan berkualitas hotel bintang lima. Menggunakan teknologi Fitted 360° Elastic Band yang memeluk kasur dengan kuat dan rapi, tidak akan berantakan meskipun Anda banyak bergerak saat tidur.\n\nIsi Paket:\n- 1 Sprei Fitted (Pilihan ukuran: King 180x200 / Queen 160x200)\n- 2 Sarung Bantal Embroidered Gold Crest\n- 2 Sarung Guling Satin Trim\n- Bahan: Micro-Tencel Sutra Halus 60s, dingin dan mudah dibersihkan",
+        "full_desc": "Bagi Anda yang sudah memiliki bedcover namun membutuhkan sprei cadangan berkualitas hotel bintang lima. Menggunakan teknologi Fitted 360° Elastic Band yang memeluk kasur dengan kuat dan rapi, tidak akan berantakan meskipun Anda banyak bergerak saat tidur.\n\nIsi Paket:\n- 1 Sprei Fitted (Pilihan ukuran: 180 x 200 / 160 x 200 / 120 x 200)\n- 2 Sarung Bantal Embroidered Gold Crest\n- 2 Sarung Guling Satin Trim\n- Bahan: Micro-Tencel Sutra Halus 60s, dingin dan mudah dibersihkan",
         "images": [
             "https://images.unsplash.com/photo-1582582621959-48d27397dc69?auto=format&fit=crop&w=1000&q=80",
             "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=80"
         ],
         "video": "",
         "sizes": [
-            "Single (120x200)",
-            "Queen (160x200)",
-            "King (180x200)",
-            "Super King (200x200)"
+            "180 x 200",
+            "160 x 200",
+            "120 x 200",
+            "95 x 140"
+        ],
+        "heights": [
+            "20 cm",
+            "25 cm"
         ],
         "created_at": "2026-11-03 08:00:00",
-        "updated_at": "2026-11-03 08:00:00"
+        "updated_at": "2026-11-06 10:00:00"
     }
 ]

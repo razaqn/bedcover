@@ -415,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    return selected.length > 0 ? selected : ['20 cm', '25 cm'];
+    return selected;
   }
 
   function openAddModal() {

@@ -408,15 +408,6 @@ if ($selectedProduct) {
         <p class="footer-desc">Menghadirkan standar tidur mewah hotel bintang lima dan sentuhan sutra royal langsung ke kamar tidur Anda.</p>
       </div>
 
-      <div class="footer-col">
-        <h4 class="footer-title">Kategori Pilihan</h4>
-        <ul class="footer-links">
-          <?php foreach ($categories as $c): ?>
-            <?php $cn = is_array($c) ? $c['name'] : (string)$c; ?>
-            <li><a href="javascript:void(0)" class="footer-cat-link" data-category="<?= e($cn) ?>"><?= e($cn) ?></a></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
 
       <div class="footer-col">
         <h4 class="footer-title">Layanan</h4>

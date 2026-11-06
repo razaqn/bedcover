@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isSold) statusBadgeClass = 'sold';
 
       const sizes = Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes : ['180 x 200', '160 x 200', '120 x 200'];
-      const heights = Array.isArray(p.heights) && p.heights.length > 0 ? p.heights : ['25 cm', '20 cm'];
+      const heights = Array.isArray(p.heights) ? p.heights : [];
 
       return `
         <div class="product-card" data-id="${escapeHtml(p.id)}">
@@ -568,7 +568,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const isLoved = wishlist.includes(p.id);
     const hasVideo = !!p.video;
     const sizes = Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes : ['180 x 200', '160 x 200', '120 x 200', '95 x 140', '140 x 190', '190 x 220', '190 x 270'];
-    const heights = Array.isArray(p.heights) && p.heights.length > 0 ? p.heights : ['25 cm', '20 cm'];
+    const heights = Array.isArray(p.heights) ? p.heights : [];
+    const hasHeightVariants = heights.length > 0;
 
     // Update Browser URL for direct sharing & Open Graph unfurl
     history.replaceState(null, null, `?product=${encodeURIComponent(p.id)}`);
@@ -619,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- 1. UKURAN KASUR SELECTION -->
           <div class="modal-size-select-section" id="modalSizeSection">
             <div class="modal-size-header">
-              <span class="modal-size-title">1. Pilih Ukuran Kasur</span>
+              <span class="modal-size-title">${hasHeightVariants ? '1. Pilih Ukuran Kasur' : 'Pilih Ukuran Kasur'}</span>
               <span class="size-required-badge">Wajib</span>
             </div>
             <p class="size-select-helper">Pilih salah satu ukuran bedcover:</p>
@@ -634,11 +635,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- 2. TINGGI KASUR SELECTION -->
+          ${hasHeightVariants ? `
+          <!-- 2. TINGGI KASUR SELECTION (OPTIONAL VARIANT) -->
           <div class="modal-height-select-section" id="modalHeightSection">
             <div class="modal-size-header">
               <span class="modal-size-title">2. Pilih Tinggi Kasur</span>
-              <span class="size-required-badge">Wajib</span>
+              <span class="size-required-badge">Pilihan</span>
             </div>
             <p class="size-select-helper">Pilih tinggi ranjang/kasur Anda:</p>
 
@@ -650,17 +652,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
               `).join('')}
             </div>
+          </div>
+          ` : ''}
 
-            <div class="size-alert-hint" id="sizeAlertHint" style="display: none; margin-top: 10px;">
-              ⚠️ Silakan pilih ukuran dan tinggi kasur terlebih dahulu sebelum konsultasi atau menambah ke keranjang.
-            </div>
+          <div class="size-alert-hint" id="sizeAlertHint" style="display: none; margin-top: 10px;">
+            ⚠️ Silakan pilih ${hasHeightVariants ? 'ukuran dan tinggi kasur' : 'ukuran kasur'} terlebih dahulu sebelum konsultasi atau menambah ke keranjang.
           </div>
 
           <!-- DUAL ACTIONS: WHATSAPP AUTO-CHAT & ADD TO CART -->
           <div class="modal-actions-dual">
             <a href="javascript:void(0)" class="btn-whatsapp-chat locked" id="btnModalWhatsApp" data-locked="true" rel="noopener">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-              <span id="waBtnLabel">Pilih Ukuran &amp; Tinggi Dulu</span>
+              <span id="waBtnLabel">${hasHeightVariants ? 'Pilih Ukuran &amp; Tinggi Dulu' : 'Pilih Ukuran Kasur Dulu'}</span>
             </a>
 
             <button type="button" class="btn-modal-cart locked" id="btnModalAddToCart">
@@ -701,7 +704,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkSelectionStatus() {
       const hasSize = !!selectedModalSize;
-      const hasHeight = !!selectedModalHeight;
+      const requiresHeight = hasHeightVariants;
+      const hasHeight = !requiresHeight || !!selectedModalHeight;
 
       if (hasSize && hasHeight) {
         if (sizeAlertHint) sizeAlertHint.style.display = 'none';
@@ -711,7 +715,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btnModalWhatsApp.classList.add('unlocked');
         btnModalWhatsApp.setAttribute('data-locked', 'false');
         if (waBtnLabel) {
-          waBtnLabel.textContent = `Tanya Ready via WA (${selectedModalSize} • T: ${selectedModalHeight})`;
+          if (requiresHeight && selectedModalHeight) {
+            waBtnLabel.textContent = `Tanya Ready via WA (${selectedModalSize} • T: ${selectedModalHeight})`;
+          } else {
+            waBtnLabel.textContent = `Tanya Ready via WA (${selectedModalSize})`;
+          }
         }
 
         // Generate WA Auto-Chat Link
@@ -729,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnModalAddToCart.classList.add('locked');
 
         if (!hasSize && !hasHeight) {
-          if (waBtnLabel) waBtnLabel.textContent = 'Pilih Ukuran & Tinggi Dulu';
+          if (waBtnLabel) waBtnLabel.textContent = requiresHeight ? 'Pilih Ukuran & Tinggi Dulu' : 'Pilih Ukuran Kasur Dulu';
         } else if (!hasSize) {
           if (waBtnLabel) waBtnLabel.textContent = 'Pilih Ukuran Kasur Dulu';
         } else {
@@ -761,29 +769,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-select if only 1 option available
     if (sizes.length === 1) {
       selectedModalSize = sizes[0];
-      sizePillBtns[0].classList.add('active');
+      if (sizePillBtns.length > 0) sizePillBtns[0].classList.add('active');
     }
-    if (heights.length === 1) {
+    if (hasHeightVariants && heights.length === 1) {
       selectedModalHeight = heights[0];
-      heightPillBtns[0].classList.add('active');
+      if (heightPillBtns.length > 0) heightPillBtns[0].classList.add('active');
     }
     checkSelectionStatus();
 
     // Guard WA Click
     btnModalWhatsApp.addEventListener('click', (e) => {
-      if (btnModalWhatsApp.getAttribute('data-locked') === 'true' || !selectedModalSize || !selectedModalHeight) {
+      const requiresHeight = hasHeightVariants;
+      if (btnModalWhatsApp.getAttribute('data-locked') === 'true' || !selectedModalSize || (requiresHeight && !selectedModalHeight)) {
         e.preventDefault();
         e.stopPropagation();
         if (sizeAlertHint) sizeAlertHint.style.display = 'block';
-        showToast('⚠️ Silakan pilih ukuran dan tinggi kasur terlebih dahulu!');
+        showToast(requiresHeight ? '⚠️ Silakan pilih ukuran dan tinggi kasur terlebih dahulu!' : '⚠️ Silakan pilih ukuran kasur terlebih dahulu!');
       }
     });
 
     // Add To Cart Click
     btnModalAddToCart.addEventListener('click', () => {
-      if (!selectedModalSize || !selectedModalHeight) {
+      const requiresHeight = hasHeightVariants;
+      if (!selectedModalSize || (requiresHeight && !selectedModalHeight)) {
         if (sizeAlertHint) sizeAlertHint.style.display = 'block';
-        showToast('⚠️ Silakan pilih ukuran dan tinggi kasur terlebih dahulu!');
+        showToast(requiresHeight ? '⚠️ Silakan pilih ukuran dan tinggi kasur terlebih dahulu!' : '⚠️ Silakan pilih ukuran kasur terlebih dahulu!');
         return;
       }
 
@@ -794,9 +804,14 @@ document.addEventListener('DOMContentLoaded', () => {
         price: p.price || 0,
         image: coverImg,
         size: selectedModalSize,
-        height: selectedModalHeight,
+        height: selectedModalHeight || '',
         qty: 1
       });
+
+      showToast(`Berhasil menambahkan "${p.name}" ke keranjang! 🛒`);
+      closeProductModal();
+      openCartDrawer();
+    });
 
       showToast(`Berhasil menambahkan "${p.name}" ke keranjang! 🛒`);
       closeProductModal();
@@ -866,7 +881,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (size) msg += `• Ukuran: ${size}\n`;
     if (height) msg += `• Tinggi: ${height}\n`;
     if (price) msg += `• Harga: ${formatRupiah(price)}\n`;
-    msg += `\nApakah produk dengan ukuran & tinggi di atas masih ready stock? Terima kasih! 🛌✨`;
+    const spesifikasiTeks = height ? 'ukuran & tinggi' : 'ukuran';
+    msg += `\nApakah produk dengan ${spesifikasiTeks} di atas masih ready stock? Terima kasih! 🛌✨`;
 
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
   }
@@ -877,7 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function addItemToCart(item) {
     // Generate a unique key per item variant (productId + size + height)
-    const cartItemId = `${item.productId}_${item.size}_${item.height}`;
+    const cartItemId = `${item.productId}_${item.size}_${item.height || 'standar'}`;
     const existingIndex = cart.findIndex(c => c.id === cartItemId);
 
     if (existingIndex > -1) {
@@ -891,7 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
         price: item.price,
         image: item.image,
         size: item.size,
-        height: item.height,
+        height: item.height || '',
         qty: item.qty || 1,
         selected: true
       });
@@ -1009,7 +1025,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cart-item-info">
           <div class="cart-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
           <div class="cart-item-meta">
-            Ukuran: <strong>${escapeHtml(item.size)}</strong> | T: <strong>${escapeHtml(item.height)}</strong>
+            Ukuran: <strong>${escapeHtml(item.size)}</strong>${item.height ? ` | T: <strong>${escapeHtml(item.height)}</strong>` : ''}
           </div>
           <div class="cart-item-price">${formatRupiah(item.price)}</div>
         </div>
@@ -1114,7 +1130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         msg += `${index + 1}. *${item.name}*\n`;
         msg += `   • Link: ${itemUrl}\n`;
-        msg += `   • Ukuran: ${item.size} | Tinggi: ${item.height}\n`;
+        msg += `   • Ukuran: ${item.size}${item.height ? ` | Tinggi: ${item.height}` : ''}\n`;
         msg += `   • Jumlah: ${item.qty} pcs (${formatRupiah(item.price)}/pcs)\n`;
         msg += `   • Subtotal: ${formatRupiah(subtotal)}\n\n`;
       });

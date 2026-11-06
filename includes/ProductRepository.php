@@ -122,7 +122,7 @@ class ProductRepository {
             $sizes = ['180 x 200', '160 x 200', '120 x 200', '140 x 190', '190 x 220', '190 x 270', '95 x 140'];
         }
 
-        // Parse heights (Tinggi: 20 cm, 25 cm, 30 cm, etc.)
+        // Parse heights (Tinggi: 20 cm, 25 cm, 30 cm, etc. - OPTIONAL: can be 0 or more variants)
         $heights = [];
         if (isset($data['heights'])) {
             if (is_array($data['heights'])) {
@@ -135,9 +135,6 @@ class ProductRepository {
                     $heights = array_values(array_filter(array_map('trim', explode(',', $data['heights']))));
                 }
             }
-        }
-        if (empty($heights)) {
-            $heights = ['20 cm', '25 cm'];
         }
 
         $newProduct = [
@@ -231,8 +228,8 @@ class ProductRepository {
             }
         }
 
-        // Parse heights
-        $heights = $existing['heights'] ?? ['20 cm', '25 cm'];
+        // Parse heights (OPTIONAL)
+        $heights = $existing['heights'] ?? [];
         if (isset($data['heights'])) {
             if (is_array($data['heights'])) {
                 $heights = array_values(array_filter(array_map('trim', $data['heights'])));
@@ -522,7 +519,7 @@ class ProductRepository {
             $formattedImages = array_map('format_image_url', $images);
             $video = !empty($product['video']) ? format_image_url($product['video']) : '';
             $sizes = !empty($product['sizes']) && is_array($product['sizes']) ? $product['sizes'] : ['180 x 200', '160 x 200', '120 x 200', '140 x 190', '190 x 220', '190 x 270', '95 x 140'];
-            $heights = !empty($product['heights']) && is_array($product['heights']) ? $product['heights'] : ['20 cm', '25 cm'];
+            $heights = is_array($product['heights'] ?? null) ? array_values(array_filter(array_map('trim', $product['heights']))) : [];
 
             return [
                 'id' => $product['id'] ?? generate_product_id(),

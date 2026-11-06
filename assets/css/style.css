@@ -2511,3 +2511,260 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
+/* ==============================================================================
+   LIGHT LUXURY THEME (Ivory, Champagne & Antique Royal Gold)
+   Adapts to device settings (prefers-color-scheme: light) or manual toggle
+   ============================================================================== */
+:root[data-theme="light"],
+[data-theme="light"] {
+  --bg-main: #fcfbfa;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f5f0e8;
+  --bg-surface-hover: #ebe4d8;
+  
+  --gold-primary: #b38728;
+  --gold-light: #6e4d08;
+  --gold-hover: #966e1b;
+  --gold-dark: #5a3c00;
+  --gold-gradient: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+  --gold-gradient-subtle: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(179, 135, 40, 0.04) 100%);
+  --gold-glow: 0 4px 20px rgba(179, 135, 40, 0.16);
+  --gold-border: rgba(179, 135, 40, 0.28);
+  --gold-border-bright: rgba(179, 135, 40, 0.65);
+
+  --text-main: #18191f;
+  --text-muted: #5e6677;
+  --text-sub: #374151;
+}
+
+[data-theme="light"] body.luxury-theme {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+[data-theme="light"] .luxury-ambient-bg {
+  background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+}
+
+[data-theme="light"] .announcement-bar {
+  background: linear-gradient(90deg, #f7efe1 0%, #ede0ca 50%, #f7efe1 100%);
+  border-bottom: 1px solid rgba(179, 135, 40, 0.22);
+  color: #3d2f10;
+}
+
+[data-theme="light"] .announcement-link {
+  color: #73500a;
+}
+
+[data-theme="light"] .main-header {
+  background: rgba(252, 251, 250, 0.92);
+  border-bottom: 1px solid rgba(179, 135, 40, 0.2);
+}
+
+[data-theme="light"] .search-section {
+  background: #f7f2ea;
+  border-bottom: 1px solid rgba(179, 135, 40, 0.2);
+}
+
+[data-theme="light"] .search-input-wrapper {
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(179, 135, 40, 0.12);
+}
+
+[data-theme="light"] .search-input-wrapper input {
+  color: #18191f;
+}
+
+[data-theme="light"] .quick-tag {
+  background: #f0e7d8;
+  color: #6e4d08;
+  border-color: rgba(179, 135, 40, 0.25);
+}
+
+[data-theme="light"] .quick-tag:hover {
+  background: var(--gold-primary);
+  color: #ffffff;
+}
+
+[data-theme="light"] .category-card {
+  background: #ffffff;
+  border-color: rgba(179, 135, 40, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .product-card {
+  background: #ffffff;
+  border-color: rgba(179, 135, 40, 0.22);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .product-media-wrap {
+  background: #f3ede2;
+}
+
+[data-theme="light"] .product-title {
+  color: #18191f;
+}
+
+[data-theme="light"] .product-price .price-amount {
+  color: var(--gold-light);
+}
+
+[data-theme="light"] .catalog-filters-container .filters-grid-boxes {
+  background: #ffffff;
+  border-color: rgba(179, 135, 40, 0.25);
+  box-shadow: 0 4px 18px rgba(179, 135, 40, 0.08);
+}
+
+[data-theme="light"] .luxury-filter-select {
+  background: #fbf9f5;
+  color: #18191f;
+  border-color: rgba(179, 135, 40, 0.3);
+}
+
+[data-theme="light"] .modal-container {
+  background: #ffffff;
+  border-color: rgba(179, 135, 40, 0.35);
+  color: #18191f;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .modal-product-title {
+  color: #18191f;
+}
+
+[data-theme="light"] .modal-full-desc {
+  color: #374151;
+}
+
+[data-theme="light"] .modal-size-pill,
+[data-theme="light"] .modal-height-pill {
+  background: #fbf9f5;
+  color: #18191f;
+  border-color: rgba(179, 135, 40, 0.25);
+}
+
+[data-theme="light"] .modal-size-pill:hover,
+[data-theme="light"] .modal-height-pill:hover {
+  background: #f5ede0;
+}
+
+[data-theme="light"] .modal-size-pill.active,
+[data-theme="light"] .modal-height-pill.active {
+  background: var(--gold-primary);
+  color: #ffffff;
+  border-color: var(--gold-light);
+}
+
+[data-theme="light"] .cart-drawer {
+  background: #ffffff;
+  border-left-color: rgba(179, 135, 40, 0.25);
+  color: #18191f;
+}
+
+[data-theme="light"] .cart-drawer-header {
+  background: #fbf9f5;
+  border-bottom-color: rgba(179, 135, 40, 0.2);
+}
+
+[data-theme="light"] .cart-toolbar {
+  background: #f8f4ec;
+  border-bottom-color: rgba(179, 135, 40, 0.15);
+}
+
+[data-theme="light"] .cart-checkbox-wrap {
+  color: #18191f;
+}
+
+[data-theme="light"] .cart-item-row {
+  background: #fdfbf7;
+  border-color: rgba(179, 135, 40, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .cart-item-name {
+  color: #18191f;
+}
+
+[data-theme="light"] .cart-item-price {
+  color: var(--gold-light);
+}
+
+[data-theme="light"] .btn-qty {
+  background: #f3ece0;
+  color: #18191f;
+}
+
+[data-theme="light"] .cart-qty-value {
+  color: #18191f;
+}
+
+[data-theme="light"] .cart-drawer-footer {
+  background: #fbf9f5;
+  border-top-color: rgba(179, 135, 40, 0.2);
+}
+
+[data-theme="light"] .summary-label {
+  color: #4b5563;
+}
+
+[data-theme="light"] .main-footer {
+  background: #f5efe4;
+  border-top: 1px solid rgba(179, 135, 40, 0.22);
+}
+
+[data-theme="light"] .footer-title {
+  color: #18191f;
+}
+
+[data-theme="light"] .footer-desc,
+[data-theme="light"] .contact-item {
+  color: #4b5563;
+}
+
+[data-theme="light"] .footer-bottom {
+  background: #eae2d3;
+  border-top: 1px solid rgba(179, 135, 40, 0.15);
+  color: #5e6677;
+}
+
+[data-theme="light"] .empty-state {
+  background: #ffffff;
+  border-color: rgba(179, 135, 40, 0.2);
+}
+
+[data-theme="light"] .empty-title {
+  color: #18191f;
+}
+
+/* Theme Toggle Button Behavior in Bedcover */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  color: var(--gold-primary);
+  border-color: var(--gold-primary);
+}
+
+[data-theme="light"] .theme-toggle-btn .icon-sun {
+  display: none !important;
+}
+[data-theme="light"] .theme-toggle-btn .icon-moon {
+  display: block !important;
+}
+
+[data-theme="dark"] .theme-toggle-btn .icon-sun,
+:root:not([data-theme="light"]) .theme-toggle-btn .icon-sun {
+  display: block !important;
+}
+[data-theme="dark"] .theme-toggle-btn .icon-moon,
+:root:not([data-theme="light"]) .theme-toggle-btn .icon-moon {
+  display: none !important;
+}
+

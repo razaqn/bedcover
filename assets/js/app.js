@@ -813,11 +813,6 @@ document.addEventListener('DOMContentLoaded', () => {
       openCartDrawer();
     });
 
-      showToast(`Berhasil menambahkan "${p.name}" ke keranjang! 🛒`);
-      closeProductModal();
-      openCartDrawer();
-    });
-
     // Love Toggle
     const btnModalLove = document.getElementById('btnModalLove');
     if (btnModalLove) {

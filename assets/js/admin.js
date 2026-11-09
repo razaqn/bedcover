@@ -392,12 +392,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkboxes = document.querySelectorAll('input[name="product_heights[]"]');
     const standardValues = [];
     checkboxes.forEach(cb => {
-      standardValues.push(cb.value.toLowerCase());
-      const isMatch = heightsArray.some(h => h.toLowerCase() === cb.value.toLowerCase());
+      const cbVal = cb.value.toLowerCase().trim();
+      standardValues.push(cbVal);
+      const cbClean = cbVal.replace(/\s*cm$/, '');
+      const isMatch = heightsArray.some(h => {
+        const hClean = String(h).toLowerCase().trim().replace(/\s*cm$/, '');
+        return hClean === cbClean;
+      });
       cb.checked = isMatch;
     });
 
-    const customHeights = heightsArray.filter(h => !standardValues.includes(h.toLowerCase()));
+    const customHeights = heightsArray.filter(h => {
+      const hClean = String(h).toLowerCase().trim().replace(/\s*cm$/, '');
+      return !standardValues.some(sv => sv.replace(/\s*cm$/, '') === hClean);
+    });
     if (formCustomHeights) {
       formCustomHeights.value = customHeights.join(', ');
     }
@@ -411,7 +419,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formCustomHeights && formCustomHeights.value.trim()) {
       const customs = formCustomHeights.value.split(',').map(h => h.trim()).filter(Boolean);
       customs.forEach(c => {
-        if (!selected.includes(c)) selected.push(c);
+        const formatted = /^\d+$/.test(c) ? `${c} cm` : c;
+        if (!selected.includes(formatted)) selected.push(formatted);
       });
     }
 
@@ -456,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200', '160 x 200'];
     setFormSizes(productSizes);
 
-    const productHeights = Array.isArray(product.heights) && product.heights.length > 0 ? product.heights : ['25 cm', '20 cm'];
+    const productHeights = Array.isArray(product.heights) ? product.heights : [];
     setFormHeights(productHeights);
 
     productFormModal.classList.add('active');
@@ -490,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200', '160 x 200'];
     setFormSizes(productSizes);
 
-    const productHeights = Array.isArray(product.heights) && product.heights.length > 0 ? product.heights : ['25 cm', '20 cm'];
+    const productHeights = Array.isArray(product.heights) ? product.heights : [];
     setFormHeights(productHeights);
 
     productFormModal.classList.add('active');

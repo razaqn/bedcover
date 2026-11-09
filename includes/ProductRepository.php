@@ -178,7 +178,8 @@ class ProductRepository {
                     $newProduct['created_at'],
                     $newProduct['updated_at'],
                     $newProduct['video'],
-                    json_encode($newProduct['sizes'])
+                    json_encode($newProduct['sizes']),
+                    json_encode($newProduct['heights'])
                 ];
                 $this->googleClient->appendSheetRow($row);
             } catch (Exception $e) {
@@ -335,7 +336,8 @@ class ProductRepository {
                         $updatedProduct['created_at'],
                         $updatedProduct['updated_at'],
                         $updatedProduct['video'],
-                        json_encode($updatedProduct['sizes'])
+                        json_encode($updatedProduct['sizes']),
+                        json_encode($updatedProduct['heights'])
                     ];
                     $this->googleClient->updateSheetRow($foundRowIndex, $sheetRow);
                 }
@@ -428,6 +430,16 @@ class ProductRepository {
         $updatedIdx = array_search('updated_at', $header) !== false ? array_search('updated_at', $header) : 9;
         $videoIdx = array_search('video', $header);
         $sizesIdx = array_search('sizes', $header) !== false ? array_search('sizes', $header) : array_search('ukuran', $header);
+        $heightsIdx = false;
+        foreach ($header as $i => $col) {
+            if (in_array($col, ['heights', 'tinggi', 'height'])) {
+                $heightsIdx = $i;
+                break;
+            }
+        }
+        if ($heightsIdx === false && isset($rows[0][12])) {
+            $heightsIdx = 12;
+        }
 
         $products = [];
 
@@ -449,6 +461,7 @@ class ProductRepository {
             $updatedAt = trim($row[$updatedIdx] ?? date('Y-m-d H:i:s'));
             $video = ($videoIdx !== false) ? trim($row[$videoIdx] ?? '') : '';
             $rawSizes = ($sizesIdx !== false) ? trim($row[$sizesIdx] ?? '') : '';
+            $rawHeights = ($heightsIdx !== false) ? trim($row[$heightsIdx] ?? '') : '';
 
             $images = [];
             if (!empty($rawImages)) {
@@ -477,6 +490,16 @@ class ProductRepository {
                 $sizes = ['Single (120x200)', 'Queen (160x200)', 'King (180x200)', 'Super King (200x200)'];
             }
 
+            $heights = [];
+            if (!empty($rawHeights)) {
+                $decodedHeights = json_decode($rawHeights, true);
+                if (is_array($decodedHeights)) {
+                    $heights = array_values(array_filter(array_map('trim', $decodedHeights)));
+                } else {
+                    $heights = array_values(array_filter(array_map('trim', explode(',', $rawHeights))));
+                }
+            }
+
             $formattedImages = array_map('format_image_url', $images);
             $formattedVideo = !empty($video) ? format_image_url($video) : '';
 
@@ -491,6 +514,7 @@ class ProductRepository {
                 'images' => array_values($formattedImages),
                 'video' => $formattedVideo,
                 'sizes' => $sizes,
+                'heights' => $heights,
                 'created_at' => $createdAt,
                 'updated_at' => $updatedAt
             ];

@@ -336,13 +336,13 @@ class GoogleClient {
     }
 
     /**
-     * Initialize Sheet with Header if empty or ensure Video and Sizes columns exist
+     * Initialize Sheet with Header if empty or ensure Video, Sizes, and Heights columns exist
      */
     public function initializeSheetHeader() {
         $rows = $this->getSheetRows();
         if (empty($rows)) {
-            $headers = ['ID', 'Name', 'Category', 'Price', 'Status', 'Short_Desc', 'Full_Desc', 'Images', 'Created_At', 'Updated_At', 'Video', 'Sizes'];
-            $range = rawurlencode($this->sheetName . '!A1:L1');
+            $headers = ['ID', 'Name', 'Category', 'Price', 'Status', 'Short_Desc', 'Full_Desc', 'Images', 'Created_At', 'Updated_At', 'Video', 'Sizes', 'Heights'];
+            $range = rawurlencode($this->sheetName . '!A1:M1');
             $url = "https://sheets.googleapis.com/v4/spreadsheets/{$this->spreadsheetId}/values/{$range}?valueInputOption=USER_ENTERED";
             $this->apiRequest($url, 'PUT', ['values' => [$headers]]);
         } else {
@@ -363,6 +363,15 @@ class GoogleClient {
                     $this->apiRequest($url, 'PUT', ['values' => [['Sizes']]]);
                 } catch (Exception $e) {
                     error_log("Could not update Sizes header: " . $e->getMessage());
+                }
+            }
+            if (!in_array('heights', $header) && !in_array('tinggi', $header) && !in_array('height', $header)) {
+                $range = rawurlencode($this->sheetName . '!M1');
+                $url = "https://sheets.googleapis.com/v4/spreadsheets/{$this->spreadsheetId}/values/{$range}?valueInputOption=USER_ENTERED";
+                try {
+                    $this->apiRequest($url, 'PUT', ['values' => [['Heights']]]);
+                } catch (Exception $e) {
+                    error_log("Could not update Heights header: " . $e->getMessage());
                 }
             }
         }

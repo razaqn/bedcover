@@ -435,23 +435,9 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
               </label>
             </div>
 
-            <!-- Input Ukuran Tambahan Lainnya (Lebar x Panjang x Tinggi, bisa lebih dari 1) -->
-            <div class="custom-sizes-manager-box">
-              <label class="custom-sizes-title">Tambah Ukuran Lainnya (Lebar &times; Panjang &times; Tinggi cm):</label>
-              <div class="custom-size-inputs-row">
-                <input type="number" id="inputCustomWidth" class="form-control" placeholder="Lebar" min="1">
-                <span class="size-x">&times;</span>
-                <input type="number" id="inputCustomLength" class="form-control" placeholder="Panjang" min="1">
-                <span class="size-x">&times;</span>
-                <input type="number" id="inputCustomHeight" class="form-control" placeholder="Tinggi" min="1">
-                <span class="size-unit">cm</span>
-                <button type="button" class="btn btn-luxury-outline btn-sm" id="btnAddCustomSize" style="white-space: nowrap;">
-                  + Tambah Ukuran
-                </button>
-              </div>
-              <div class="custom-sizes-tags-list" id="customSizesListContainer">
-                <!-- Dynamic custom size pills rendered here -->
-              </div>
+            <!-- Input Ukuran Lainnya (Teks Bebas, Pisahkan Koma) -->
+            <div style="margin-top: 10px;">
+              <input type="text" id="formCustomSizes" class="form-control" placeholder="Ukuran Tambahan Lainnya (teks bebas, pisahkan koma contoh: 140 x 200 x 40 cm, 200 x 220 x 30 cm)">
             </div>
           </div>
 

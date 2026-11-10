@@ -62,12 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const formStatus = document.getElementById('formStatus');
   const formShortDesc = document.getElementById('formShortDesc');
   const formFullDesc = document.getElementById('formFullDesc');
-  const inputCustomWidth = document.getElementById('inputCustomWidth');
-  const inputCustomLength = document.getElementById('inputCustomLength');
-  const inputCustomHeight = document.getElementById('inputCustomHeight');
-  const btnAddCustomSize = document.getElementById('btnAddCustomSize');
-  const customSizesListContainer = document.getElementById('customSizesListContainer');
-  let customSizes = [];
+  const formCustomSizes = document.getElementById('formCustomSizes');
 
   // Cropper DOM Elements
   const cropperModal = document.getElementById('cropperModal');
@@ -78,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCropperRotateLeft = document.getElementById('btnCropperRotateLeft');
   const btnCropperRotateRight = document.getElementById('btnCropperRotateRight');
   const btnCropperReset = document.getElementById('btnCropperReset');
+  const ratioButtons = document.querySelectorAll('.btn-ratio');
 
   const formVideoUrl = document.getElementById('formVideoUrl');
   const videoFileInput = document.getElementById('videoFileInput');
@@ -370,54 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // PRODUCT FORM MODAL LOGIC (ADD, EDIT, COPY)
   // ==========================================
 
-  // Custom Sizes Manager
-  function renderCustomSizesList() {
-    if (!customSizesListContainer) return;
-    if (customSizes.length === 0) {
-      customSizesListContainer.innerHTML = '<span style="font-size: 0.78rem; color: var(--text-muted); font-style: italic;">Belum ada ukuran tambahan.</span>';
-      return;
-    }
-
-    customSizesListContainer.innerHTML = customSizes.map((s, idx) => `
-      <span class="custom-size-pill">
-        <span>${escapeHtml(s)}</span>
-        <button type="button" class="btn-remove-custom-size" data-index="${idx}" title="Hapus Ukuran">&times;</button>
-      </span>
-    `).join('');
-
-    customSizesListContainer.querySelectorAll('.btn-remove-custom-size').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.getAttribute('data-index'), 10);
-        customSizes.splice(idx, 1);
-        renderCustomSizesList();
-      });
-    });
-  }
-
-  if (btnAddCustomSize) {
-    btnAddCustomSize.addEventListener('click', () => {
-      const w = inputCustomWidth ? inputCustomWidth.value.trim() : '';
-      const l = inputCustomLength ? inputCustomLength.value.trim() : '';
-      const h = inputCustomHeight ? inputCustomHeight.value.trim() : '';
-
-      if (!w || !l || !h) {
-        showToast('Mohon isi Lebar, Panjang, dan Tinggi dengan lengkap.', 'error');
-        return;
-      }
-
-      const sizeStr = `${w} x ${l} x ${h} cm`;
-      if (!customSizes.includes(sizeStr)) {
-        customSizes.push(sizeStr);
-        renderCustomSizesList();
-      }
-
-      if (inputCustomWidth) inputCustomWidth.value = '';
-      if (inputCustomLength) inputCustomLength.value = '';
-      if (inputCustomHeight) inputCustomHeight.value = '';
-      if (inputCustomWidth) inputCustomWidth.focus();
-    });
-  }
-
   function setFormSizes(sizesArray = []) {
     const checkboxes = document.querySelectorAll('input[name="product_sizes[]"]');
     const standardValues = [];
@@ -432,17 +380,19 @@ document.addEventListener('DOMContentLoaded', () => {
       cb.checked = isMatch;
     });
 
-    customSizes = [];
+    const custom = [];
     sizesArray.forEach(s => {
       const sTrim = s.trim();
       const sLower = sTrim.toLowerCase();
       const isStandard = standardValues.some(sv => sv === sLower || sv.replace(/\s*cm$/, '') === sLower.replace(/\s*cm$/, ''));
-      if (!isStandard && !customSizes.includes(sTrim)) {
-        customSizes.push(sTrim);
+      if (!isStandard && !custom.includes(sTrim)) {
+        custom.push(sTrim);
       }
     });
 
-    renderCustomSizesList();
+    if (formCustomSizes) {
+      formCustomSizes.value = custom.join(', ');
+    }
   }
 
   function getFormSizes() {
@@ -450,9 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkboxes = document.querySelectorAll('input[name="product_sizes[]"]:checked');
     checkboxes.forEach(cb => selected.push(cb.value));
 
-    customSizes.forEach(c => {
-      if (!selected.includes(c)) selected.push(c);
-    });
+    if (formCustomSizes && formCustomSizes.value.trim()) {
+      const customs = formCustomSizes.value.split(',').map(s => s.trim()).filter(Boolean);
+      customs.forEach(c => {
+        if (!selected.includes(c)) selected.push(c);
+      });
+    }
 
     return selected.length > 0 ? selected : ['180 x 200 x 40 cm', '160 x 200 x 40 cm'];
   }
@@ -467,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVideoPreview('');
     renderFormImages();
     setFormSizes(['180 x 200 x 40 cm', '160 x 200 x 40 cm', '120 x 200 x 40 cm']);
+    if (formCustomSizes) formCustomSizes.value = '';
     productFormModal.classList.add('active');
   }
 

@@ -488,8 +488,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formVideoUrl.value = product.video || '';
     updateVideoPreview(product.video || '');
 
-    // Reverse images so rightmost is the front cover in admin
-    formImages = Array.isArray(product.images) ? [...product.images].reverse() : [];
+    // Images in natural order: index 0 (leftmost) is the front cover in admin
+    formImages = Array.isArray(product.images) ? [...product.images] : [];
     renderFormImages();
 
     const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200 x 40 cm', '160 x 200 x 40 cm'];
@@ -519,8 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formVideoUrl.value = product.video || '';
     updateVideoPreview(product.video || '');
 
-    // Clone images reversed for admin display
-    formImages = Array.isArray(product.images) ? [...product.images].reverse() : [];
+    // Clone images in natural order (leftmost is front)
+    formImages = Array.isArray(product.images) ? [...product.images] : [];
     renderFormImages();
 
     const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200 x 40 cm', '160 x 200 x 40 cm'];
@@ -604,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lastIdx = formImages.length - 1;
 
     previewImagesContainer.innerHTML = formImages.map((url, idx) => {
-      const isFront = (idx === lastIdx);
+      const isFront = (idx === 0);
       return `
         <div class="preview-img-item ${isFront ? 'is-front' : ''}" data-index="${idx}" draggable="true" title="Klik foto untuk memotong (crop)">
           ${isFront 
@@ -615,8 +615,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src="${escapeHtml(formatImageUrl(url))}" alt="Preview ${idx+1}" referrerpolicy="no-referrer">
           <span class="crop-hint-badge">✂️ Klik untuk Crop</span>
           <div class="img-shift-bar" onclick="event.stopPropagation()">
-            <button type="button" class="btn-shift-img" data-action="shift-left" data-index="${idx}" ${idx === 0 ? 'disabled' : ''} title="Geser ke Kiri">◀</button>
-            <button type="button" class="btn-shift-img" data-action="shift-right" data-index="${idx}" ${idx === lastIdx ? 'disabled' : ''} title="Geser ke Kanan (Lebih Depan)">▶</button>
+            <button type="button" class="btn-shift-img" data-action="shift-left" data-index="${idx}" ${idx === 0 ? 'disabled' : ''} title="Geser ke Kiri (Lebih Depan)">◀</button>
+            <button type="button" class="btn-shift-img" data-action="shift-right" data-index="${idx}" ${idx === lastIdx ? 'disabled' : ''} title="Geser ke Kanan">▶</button>
           </div>
         </div>
       `;
@@ -903,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
         video: formVideoUrl.value.trim(),
         sizes: getFormSizes(),
         heights: [],
-        images: formImages.length > 0 ? [...formImages].reverse() : [
+        images: formImages.length > 0 ? formImages : [
           'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1000'
         ]
       };

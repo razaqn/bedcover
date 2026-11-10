@@ -656,12 +656,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- 1. UKURAN KASUR SELECTION -->
           <div class="modal-size-select-section" id="modalSizeSection">
-            <div class="modal-size-header">
-              <span class="modal-size-title">${hasHeightVariants ? '1. Pilih Ukuran Kasur' : 'Pilih Ukuran Kasur'}</span>
-              <span class="size-required-badge">Wajib</span>
-            </div>
-            <p class="size-select-helper">Pilih salah satu ukuran bedcover:</p>
-
             <div class="modal-size-pills-wrap" id="modalSizePillsWrap">
               ${sizes.map(s => `
                 <button type="button" class="modal-size-pill" data-size="${escapeHtml(s)}">
@@ -693,14 +687,14 @@ document.addEventListener('DOMContentLoaded', () => {
           ` : ''}
 
           <div class="size-alert-hint" id="sizeAlertHint" style="display: none; margin-top: 10px;">
-            ⚠️ Silakan pilih ${hasHeightVariants ? 'ukuran dan tinggi kasur' : 'ukuran kasur'} terlebih dahulu sebelum konsultasi atau menambah ke keranjang.
+            ⚠️ Silakan pilih tipe terlebih dahulu sebelum konsultasi atau menambah ke keranjang.
           </div>
 
           <!-- DUAL ACTIONS: WHATSAPP AUTO-CHAT & ADD TO CART -->
           <div class="modal-actions-dual">
             <a href="javascript:void(0)" class="btn-whatsapp-chat locked" id="btnModalWhatsApp" data-locked="true" rel="noopener">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-              <span id="waBtnLabel">${hasHeightVariants ? 'Pilih Ukuran &amp; Tinggi Dulu' : 'Pilih Ukuran Kasur Dulu'}</span>
+              <span id="waBtnLabel">Pilih tipe Terlebih dahulu</span>
             </a>
 
             <button type="button" class="btn-modal-cart locked" id="btnModalAddToCart">

@@ -295,7 +295,7 @@ if ($selectedProduct) {
         <div class="product-view-nav-bar">
           <button type="button" class="btn-back-categories" id="btnBackToCategories">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            <span>← Kembali ke Daftar Kategori</span>
+            <span>Kembali ke Daftar Kategori</span>
           </button>
 
           <div class="view-mode-tag">
@@ -336,29 +336,24 @@ if ($selectedProduct) {
                 </label>
                 <select id="filterSizeSelect" class="luxury-filter-select">
                   <option value="all">Semua Ukuran Kasur</option>
-                  <option value="180 x 200">180 x 200 (King)</option>
-                  <option value="160 x 200">160 x 200 (Queen)</option>
-                  <option value="120 x 200">120 x 200 (Single)</option>
-                  <option value="95 x 140">95 x 140</option>
-                  <option value="140 x 190">140 x 190</option>
-                  <option value="190 x 220">190 x 220</option>
-                  <option value="190 x 270">190 x 270</option>
+                  <option value="120 x 200 x 40 cm">120 x 200 x 40 cm</option>
+                  <option value="160 x 200 x 40 cm">160 x 200 x 40 cm</option>
+                  <option value="180 x 200 x 40 cm">180 x 200 x 40 cm</option>
+                  <option value="200 x 200 x 40 cm">200 x 200 x 40 cm</option>
                 </select>
               </div>
 
-              <!-- 3. Height Select Dropdown -->
+              <!-- 3. Sort Filter Select Dropdown -->
               <div class="filter-box-item">
-                <label for="filterHeightSelect" class="filter-box-label">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 8 12 3 17 8"></polyline><polyline points="7 16 12 21 17 16"></polyline><line x1="12" y1="3" x2="12" y2="21"></line></svg>
-                  <span>Filter Tinggi:</span>
+                <label for="sortFilterSelect" class="filter-box-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12m-9 6h6"/></svg>
+                  <span>Urutkan Produk:</span>
                 </label>
-                <select id="filterHeightSelect" class="luxury-filter-select">
-                  <option value="all">Semua Tinggi Kasur</option>
-                  <option value="25 cm">25 cm</option>
-                  <option value="20 cm">20 cm</option>
-                  <option value="30 cm">30 cm</option>
-                  <option value="35 cm">35 cm</option>
-                  <option value="40 cm">40 cm</option>
+                <select id="sortFilterSelect" class="luxury-filter-select">
+                  <option value="terbaru" selected>✨ Produk Terbaru</option>
+                  <option value="populer">❤️ Banyak Disukai</option>
+                  <option value="az">🔤 Alphabet A - Z</option>
+                  <option value="za">🔤 Alphabet Z - A</option>
                 </select>
               </div>
             </div>

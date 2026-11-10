@@ -606,14 +606,23 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Product View Top Nav (Back to Categories Button) */
 .product-view-nav-bar {
+  position: sticky;
+  top: 74px;
+  z-index: 80;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  margin-bottom: 24px;
+  padding: 12px 18px;
+  background: rgba(15, 17, 26, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
   flex-wrap: wrap;
   gap: 14px;
+  transition: all 0.2s ease;
 }
 
 .btn-back-categories {
@@ -2602,6 +2611,12 @@ h1, h2, h3, h4, h5, h6 {
 [data-theme="light"] .view-products-section {
   background-color: var(--bg-main) !important;
   color: var(--text-main);
+}
+
+[data-theme="light"] .product-view-nav-bar {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(179, 135, 40, 0.35) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
 }
 
 [data-theme="light"] .btn-back-categories {

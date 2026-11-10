@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentView = 'categories'; // 'categories' | 'products'
   let activeCategory = 'all';
   let activeSize = 'all';
-  let activeHeight = 'all';
+  let activeSort = 'terbaru'; // 'terbaru' | 'populer' | 'az' | 'za'
   let searchQuery = '';
   let wishlistOnly = false;
   let wishlist = getStoredWishlist();
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const catalogCountPill = document.getElementById('catalogCountPill');
   const categorySelectDropdown = document.getElementById('categorySelectDropdown');
   const filterSizeSelect = document.getElementById('filterSizeSelect');
-  const filterHeightSelect = document.getElementById('filterHeightSelect');
+  const sortFilterSelect = document.getElementById('sortFilterSelect');
   const activeCategoryBanner = document.getElementById('activeCategoryBanner');
   const selectedCategoryName = document.getElementById('selectedCategoryName');
   const btnResetCategory = document.getElementById('btnResetCategory');
@@ -316,8 +316,30 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // RESPONSIVE FILTERS (CATEGORY, UKURAN, TINGGI)
+  // RESPONSIVE FILTERS (CATEGORY, UKURAN, SORTING)
   // ==========================================
+
+  function updateFilterSizeOptions() {
+    if (!filterSizeSelect) return;
+    const currentVal = filterSizeSelect.value;
+    const standardSizes = ['120 x 200 x 40 cm', '160 x 200 x 40 cm', '180 x 200 x 40 cm', '200 x 200 x 40 cm'];
+    const allFoundSizes = new Set(standardSizes);
+
+    products.forEach(p => {
+      if (Array.isArray(p.sizes)) {
+        p.sizes.forEach(s => {
+          if (s && s.trim()) allFoundSizes.add(s.trim());
+        });
+      }
+    });
+
+    let html = '<option value="all">Semua Ukuran Kasur</option>';
+    allFoundSizes.forEach(s => {
+      html += `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`;
+    });
+    filterSizeSelect.innerHTML = html;
+    if (currentVal) filterSizeSelect.value = currentVal;
+  }
 
   function updateFiltersUI() {
     if (categorySelectDropdown) {
@@ -326,8 +348,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterSizeSelect) {
       filterSizeSelect.value = activeSize;
     }
-    if (filterHeightSelect) {
-      filterHeightSelect.value = activeHeight;
+    if (sortFilterSelect) {
+      sortFilterSelect.value = activeSort;
     }
 
     if (activeCategoryBanner && selectedCategoryName) {
@@ -361,9 +383,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (filterHeightSelect) {
-    filterHeightSelect.addEventListener('change', (e) => {
-      activeHeight = e.target.value;
+  if (sortFilterSelect) {
+    sortFilterSelect.addEventListener('change', (e) => {
+      activeSort = e.target.value;
       filterAndRenderProducts();
     });
   }
@@ -380,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnResetFilter.addEventListener('click', () => {
       activeCategory = 'all';
       activeSize = 'all';
-      activeHeight = 'all';
+      activeSort = 'terbaru';
       searchQuery = '';
       if (mainSearchInput) mainSearchInput.value = '';
       wishlistOnly = false;
@@ -410,15 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeSize !== 'all') {
       filtered = filtered.filter(p => {
         const sizes = Array.isArray(p.sizes) ? p.sizes : [];
-        return sizes.some(s => strCaseContains(s, activeSize));
-      });
-    }
-
-    // Height filter
-    if (activeHeight !== 'all') {
-      filtered = filtered.filter(p => {
-        const heights = Array.isArray(p.heights) ? p.heights : [];
-        return heights.some(h => strCaseContains(h, activeHeight));
+        return sizes.some(s => strCaseContains(s, activeSize) || strCaseContains(activeSize, s));
       });
     }
 
@@ -431,11 +445,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const catM = (p.category || '').toLowerCase().includes(searchQuery);
         const sizesStr = Array.isArray(p.sizes) ? p.sizes.join(' ').toLowerCase() : '';
         const sizeM = sizesStr.includes(searchQuery);
-        const heightsStr = Array.isArray(p.heights) ? p.heights.join(' ').toLowerCase() : '';
-        const heightM = heightsStr.includes(searchQuery);
-        return nameM || descM || fullM || catM || sizeM || heightM;
+        return nameM || descM || fullM || catM || sizeM;
       });
     }
+
+    // Sorting: terbaru | populer | az | za
+    if (activeSort === 'populer') {
+      filtered.sort((a, b) => {
+        const aFav = wishlist.includes(a.id) ? 1 : 0;
+        const bFav = wishlist.includes(b.id) ? 1 : 0;
+        return bFav - aFav;
+      });
+    } else if (activeSort === 'az') {
+      filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    } else if (activeSort === 'za') {
+      filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
+    }
+    // 'terbaru' keeps the natural order (or ID desc)
 
     if (catalogCountPill) {
       catalogCountPill.textContent = `${filtered.length} Produk`;
@@ -1331,6 +1357,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // INITIAL BOOTSTRAP
   // ==========================================
+  updateFilterSizeOptions();
   updateWishlistBadge();
   updateCartBadge();
   switchView('categories', null, false);

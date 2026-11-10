@@ -42,6 +42,7 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
+  <link rel="stylesheet" href="../assets/vendor/cropper/cropper.min.css">
 </head>
 <body class="admin-body">
   <div class="luxury-ambient-bg"></div>
@@ -412,71 +413,45 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
             </div>
           </div>
 
-          <!-- Pilihan Ukuran Tersedia -->
+          <!-- Pilihan Ukuran Bedcover (Format: Lebar x Panjang x Tinggi cm) -->
           <div class="form-group">
             <label class="form-label">Pilihan Ukuran Bedcover Tersedia *</label>
             <div class="size-options-container" id="adminSizeSelector">
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="180 x 200">
-                <span>180 x 200</span>
+                <input type="checkbox" name="product_sizes[]" value="120 x 200 x 40 cm">
+                <span>120 x 200 x 40 cm</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="160 x 200">
-                <span>160 x 200</span>
+                <input type="checkbox" name="product_sizes[]" value="160 x 200 x 40 cm">
+                <span>160 x 200 x 40 cm</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="120 x 200">
-                <span>120 x 200</span>
+                <input type="checkbox" name="product_sizes[]" value="180 x 200 x 40 cm">
+                <span>180 x 200 x 40 cm</span>
               </label>
               <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="95 x 140">
-                <span>95 x 140</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="140 x 190">
-                <span>140 x 190</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="190 x 220">
-                <span>190 x 220</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_sizes[]" value="190 x 270">
-                <span>190 x 270</span>
+                <input type="checkbox" name="product_sizes[]" value="200 x 200 x 40 cm">
+                <span>200 x 200 x 40 cm</span>
               </label>
             </div>
-            <div style="margin-top: 8px;">
-              <input type="text" id="formCustomSizes" class="form-control" placeholder="Ukuran Tambahan Lainnya (pisahkan koma)">
-            </div>
-          </div>
 
-          <!-- Pilihan Tinggi Kasur Tersedia -->
-          <div class="form-group">
-            <label class="form-label">Pilihan Tinggi Kasur / Bedcover (Tinggi) *</label>
-            <div class="size-options-container" id="adminHeightSelector">
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_heights[]" value="25 cm">
-                <span>25 cm</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_heights[]" value="20 cm">
-                <span>20 cm</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_heights[]" value="30 cm">
-                <span>30 cm</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_heights[]" value="35 cm">
-                <span>35 cm</span>
-              </label>
-              <label class="size-checkbox-pill">
-                <input type="checkbox" name="product_heights[]" value="40 cm">
-                <span>40 cm</span>
-              </label>
-            </div>
-            <div style="margin-top: 8px;">
-              <input type="text" id="formCustomHeights" class="form-control" placeholder="Tinggi Tambahan Lainnya (pisahkan koma, contoh: 15 cm, 45 cm)">
+            <!-- Input Ukuran Tambahan Lainnya (Lebar x Panjang x Tinggi, bisa lebih dari 1) -->
+            <div class="custom-sizes-manager-box">
+              <label class="custom-sizes-title">Tambah Ukuran Lainnya (Lebar &times; Panjang &times; Tinggi cm):</label>
+              <div class="custom-size-inputs-row">
+                <input type="number" id="inputCustomWidth" class="form-control" placeholder="Lebar" min="1">
+                <span class="size-x">&times;</span>
+                <input type="number" id="inputCustomLength" class="form-control" placeholder="Panjang" min="1">
+                <span class="size-x">&times;</span>
+                <input type="number" id="inputCustomHeight" class="form-control" placeholder="Tinggi" min="1">
+                <span class="size-unit">cm</span>
+                <button type="button" class="btn btn-luxury-outline btn-sm" id="btnAddCustomSize" style="white-space: nowrap;">
+                  + Tambah Ukuran
+                </button>
+              </div>
+              <div class="custom-sizes-tags-list" id="customSizesListContainer">
+                <!-- Dynamic custom size pills rendered here -->
+              </div>
             </div>
           </div>
 
@@ -516,6 +491,13 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
               <p class="drop-text">Klik di sini untuk memilih foto dari perangkat Anda</p>
               <span class="drop-hint">Format JPG, PNG, WEBP. Maks 15MB per file. Foto otomatis tersimpan di Google Drive.</span>
               <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+            </div>
+
+            <div class="image-order-notice-box">
+              <span class="notice-icon">💡</span>
+              <span class="notice-text">
+                <strong>Urutan Foto Produk:</strong> Foto <em>paling kanan</em> adalah foto utama (sampul). Gunakan tombol <strong>◀ / ▶</strong> atau geser (drag &amp; drop) untuk mengatur urutan. Klik pada foto untuk <strong>memotong (crop)</strong>.
+              </span>
             </div>
 
             <div class="preview-images-grid" id="previewImagesContainer">
@@ -624,6 +606,41 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
     </div>
   </div>
 
+  <!-- MODAL: CROP IMAGE -->
+  <div class="modal-overlay" id="cropperModal" style="z-index: 99999;">
+    <div class="modal-container cropper-modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">✂️ Crop &amp; Sesuaikan Foto Produk</h3>
+        <button type="button" class="btn-close" id="btnCloseCropperModal">&times;</button>
+      </div>
+      <div class="modal-body cropper-modal-body">
+        <div class="cropper-stage">
+          <img id="cropperImageElement" src="" alt="Foto Crop" crossorigin="anonymous">
+        </div>
+        <div class="cropper-controls-panel">
+          <div class="cropper-ratio-group">
+            <span class="cropper-control-label">Rasio Aspek:</span>
+            <div class="cropper-ratio-btns">
+              <button type="button" class="btn-ratio active" data-ratio="1">1:1 (Persegi)</button>
+              <button type="button" class="btn-ratio" data-ratio="1.333333">4:3 (Katalog)</button>
+              <button type="button" class="btn-ratio" data-ratio="0.75">3:4 (Potret)</button>
+              <button type="button" class="btn-ratio" data-ratio="NaN">Bebas</button>
+            </div>
+          </div>
+          <div class="cropper-action-tools">
+            <button type="button" class="btn-tool" id="btnCropperRotateLeft" title="Putar 90° Kiri">↺ Putar Kiri</button>
+            <button type="button" class="btn-tool" id="btnCropperRotateRight" title="Putar 90° Kanan">↻ Putar Kanan</button>
+            <button type="button" class="btn-tool" id="btnCropperReset" title="Reset Posisi">⟲ Reset</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-luxury-outline" id="btnCancelCropper">Batal</button>
+        <button type="button" class="btn btn-luxury-primary" id="btnApplyCropper">✂️ Terapkan &amp; Simpan Potongan</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div class="admin-toast" id="adminToast">
     <div class="toast-body" id="toastMessage">Pemberitahuan berhasil</div>
@@ -638,6 +655,7 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
     window.ADMIN_TOKEN = <?= json_encode(Auth::getToken()) ?>;
     window.BASE_URL = <?= json_encode(base_url()) ?>;
   </script>
+  <script src="../assets/vendor/cropper/cropper.min.js"></script>
   <script src="../assets/js/admin.js"></script>
 </body>
 </html>

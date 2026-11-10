@@ -62,8 +62,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const formStatus = document.getElementById('formStatus');
   const formShortDesc = document.getElementById('formShortDesc');
   const formFullDesc = document.getElementById('formFullDesc');
-  const formCustomSizes = document.getElementById('formCustomSizes');
-  const formCustomHeights = document.getElementById('formCustomHeights');
+  const inputCustomWidth = document.getElementById('inputCustomWidth');
+  const inputCustomLength = document.getElementById('inputCustomLength');
+  const inputCustomHeight = document.getElementById('inputCustomHeight');
+  const btnAddCustomSize = document.getElementById('btnAddCustomSize');
+  const customSizesListContainer = document.getElementById('customSizesListContainer');
+  let customSizes = [];
+
+  // Cropper DOM Elements
+  const cropperModal = document.getElementById('cropperModal');
+  const btnCloseCropperModal = document.getElementById('btnCloseCropperModal');
+  const btnCancelCropper = document.getElementById('btnCancelCropper');
+  const btnApplyCropper = document.getElementById('btnApplyCropper');
+  const cropperImageElement = document.getElementById('cropperImageElement');
+  const btnCropperRotateLeft = document.getElementById('btnCropperRotateLeft');
+  const btnCropperRotateRight = document.getElementById('btnCropperRotateRight');
+  const btnCropperReset = document.getElementById('btnCropperReset');
+
   const formVideoUrl = document.getElementById('formVideoUrl');
   const videoFileInput = document.getElementById('videoFileInput');
   const btnUploadVideo = document.getElementById('btnUploadVideo');
@@ -75,6 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const dropArea = document.getElementById('dropArea');
   const fileInput = document.getElementById('fileInput');
   const previewImagesContainer = document.getElementById('previewImagesContainer');
+
+  let cropper = null;
+  let activeCroppingIndex = null;
+  let draggedImageIndex = null;
 
   // DOM Elements - Categories
   const categoryItemsList = document.getElementById('categoryItemsList');
@@ -350,27 +369,80 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // PRODUCT FORM MODAL LOGIC (ADD, EDIT, COPY)
   // ==========================================
+
+  // Custom Sizes Manager
+  function renderCustomSizesList() {
+    if (!customSizesListContainer) return;
+    if (customSizes.length === 0) {
+      customSizesListContainer.innerHTML = '<span style="font-size: 0.78rem; color: var(--text-muted); font-style: italic;">Belum ada ukuran tambahan.</span>';
+      return;
+    }
+
+    customSizesListContainer.innerHTML = customSizes.map((s, idx) => `
+      <span class="custom-size-pill">
+        <span>${escapeHtml(s)}</span>
+        <button type="button" class="btn-remove-custom-size" data-index="${idx}" title="Hapus Ukuran">&times;</button>
+      </span>
+    `).join('');
+
+    customSizesListContainer.querySelectorAll('.btn-remove-custom-size').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.getAttribute('data-index'), 10);
+        customSizes.splice(idx, 1);
+        renderCustomSizesList();
+      });
+    });
+  }
+
+  if (btnAddCustomSize) {
+    btnAddCustomSize.addEventListener('click', () => {
+      const w = inputCustomWidth ? inputCustomWidth.value.trim() : '';
+      const l = inputCustomLength ? inputCustomLength.value.trim() : '';
+      const h = inputCustomHeight ? inputCustomHeight.value.trim() : '';
+
+      if (!w || !l || !h) {
+        showToast('Mohon isi Lebar, Panjang, dan Tinggi dengan lengkap.', 'error');
+        return;
+      }
+
+      const sizeStr = `${w} x ${l} x ${h} cm`;
+      if (!customSizes.includes(sizeStr)) {
+        customSizes.push(sizeStr);
+        renderCustomSizesList();
+      }
+
+      if (inputCustomWidth) inputCustomWidth.value = '';
+      if (inputCustomLength) inputCustomLength.value = '';
+      if (inputCustomHeight) inputCustomHeight.value = '';
+      if (inputCustomWidth) inputCustomWidth.focus();
+    });
+  }
+
   function setFormSizes(sizesArray = []) {
     const checkboxes = document.querySelectorAll('input[name="product_sizes[]"]');
     const standardValues = [];
     checkboxes.forEach(cb => {
-      standardValues.push(cb.value.toLowerCase());
-      // Check if matches value or begins with size name
+      const cbVal = cb.value.toLowerCase().trim();
+      standardValues.push(cbVal);
+      // Match exact value or without 'cm'
       const isMatch = sizesArray.some(s => {
-        const sLower = s.toLowerCase();
-        return sLower === cb.value.toLowerCase() || cb.value.toLowerCase().startsWith(sLower) || sLower.startsWith(cb.value.toLowerCase().split(' ')[0]);
+        const sClean = s.toLowerCase().trim();
+        return sClean === cbVal || sClean.replace(/\s*cm$/, '') === cbVal.replace(/\s*cm$/, '');
       });
       cb.checked = isMatch;
     });
 
-    const customSizes = sizesArray.filter(s => {
-      const sLower = s.toLowerCase();
-      return !standardValues.some(sv => sv === sLower || sv.startsWith(sLower) || sLower.startsWith(sv.split(' ')[0]));
+    customSizes = [];
+    sizesArray.forEach(s => {
+      const sTrim = s.trim();
+      const sLower = sTrim.toLowerCase();
+      const isStandard = standardValues.some(sv => sv === sLower || sv.replace(/\s*cm$/, '') === sLower.replace(/\s*cm$/, ''));
+      if (!isStandard && !customSizes.includes(sTrim)) {
+        customSizes.push(sTrim);
+      }
     });
 
-    if (formCustomSizes) {
-      formCustomSizes.value = customSizes.join(', ');
-    }
+    renderCustomSizesList();
   }
 
   function getFormSizes() {
@@ -378,53 +450,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkboxes = document.querySelectorAll('input[name="product_sizes[]"]:checked');
     checkboxes.forEach(cb => selected.push(cb.value));
 
-    if (formCustomSizes && formCustomSizes.value.trim()) {
-      const customs = formCustomSizes.value.split(',').map(s => s.trim()).filter(Boolean);
-      customs.forEach(c => {
-        if (!selected.includes(c)) selected.push(c);
-      });
-    }
-
-    return selected.length > 0 ? selected : ['180 x 200', '160 x 200'];
-  }
-
-  function setFormHeights(heightsArray = []) {
-    const checkboxes = document.querySelectorAll('input[name="product_heights[]"]');
-    const standardValues = [];
-    checkboxes.forEach(cb => {
-      const cbVal = cb.value.toLowerCase().trim();
-      standardValues.push(cbVal);
-      const cbClean = cbVal.replace(/\s*cm$/, '');
-      const isMatch = heightsArray.some(h => {
-        const hClean = String(h).toLowerCase().trim().replace(/\s*cm$/, '');
-        return hClean === cbClean;
-      });
-      cb.checked = isMatch;
+    customSizes.forEach(c => {
+      if (!selected.includes(c)) selected.push(c);
     });
 
-    const customHeights = heightsArray.filter(h => {
-      const hClean = String(h).toLowerCase().trim().replace(/\s*cm$/, '');
-      return !standardValues.some(sv => sv.replace(/\s*cm$/, '') === hClean);
-    });
-    if (formCustomHeights) {
-      formCustomHeights.value = customHeights.join(', ');
-    }
-  }
-
-  function getFormHeights() {
-    const selected = [];
-    const checkboxes = document.querySelectorAll('input[name="product_heights[]"]:checked');
-    checkboxes.forEach(cb => selected.push(cb.value));
-
-    if (formCustomHeights && formCustomHeights.value.trim()) {
-      const customs = formCustomHeights.value.split(',').map(h => h.trim()).filter(Boolean);
-      customs.forEach(c => {
-        const formatted = /^\d+$/.test(c) ? `${c} cm` : c;
-        if (!selected.includes(formatted)) selected.push(formatted);
-      });
-    }
-
-    return selected;
+    return selected.length > 0 ? selected : ['180 x 200 x 40 cm', '160 x 200 x 40 cm'];
   }
 
   function openAddModal() {
@@ -436,8 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formVideoUrl.value = '';
     updateVideoPreview('');
     renderFormImages();
-    setFormSizes(['180 x 200', '160 x 200', '120 x 200']);
-    setFormHeights(['25 cm', '20 cm']);
+    setFormSizes(['180 x 200 x 40 cm', '160 x 200 x 40 cm', '120 x 200 x 40 cm']);
     productFormModal.classList.add('active');
   }
 
@@ -459,14 +488,12 @@ document.addEventListener('DOMContentLoaded', () => {
     formVideoUrl.value = product.video || '';
     updateVideoPreview(product.video || '');
 
-    formImages = Array.isArray(product.images) ? [...product.images] : [];
+    // Reverse images so rightmost is the front cover in admin
+    formImages = Array.isArray(product.images) ? [...product.images].reverse() : [];
     renderFormImages();
 
-    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200', '160 x 200'];
+    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200 x 40 cm', '160 x 200 x 40 cm'];
     setFormSizes(productSizes);
-
-    const productHeights = Array.isArray(product.heights) ? product.heights : [];
-    setFormHeights(productHeights);
 
     productFormModal.classList.add('active');
   }
@@ -492,15 +519,12 @@ document.addEventListener('DOMContentLoaded', () => {
     formVideoUrl.value = product.video || '';
     updateVideoPreview(product.video || '');
 
-    // Clone images so admin only needs to swap
-    formImages = Array.isArray(product.images) ? [...product.images] : [];
+    // Clone images reversed for admin display
+    formImages = Array.isArray(product.images) ? [...product.images].reverse() : [];
     renderFormImages();
 
-    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200', '160 x 200'];
+    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0 ? product.sizes : ['180 x 200 x 40 cm', '160 x 200 x 40 cm'];
     setFormSizes(productSizes);
-
-    const productHeights = Array.isArray(product.heights) ? product.heights : [];
-    setFormHeights(productHeights);
 
     productFormModal.classList.add('active');
     formName.focus();
@@ -553,15 +577,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function moveImageLeft(index) {
+    if (index <= 0 || index >= formImages.length) return;
+    const temp = formImages[index];
+    formImages[index] = formImages[index - 1];
+    formImages[index - 1] = temp;
+    renderFormImages();
+  }
+
+  function moveImageRight(index) {
+    if (index < 0 || index >= formImages.length - 1) return;
+    const temp = formImages[index];
+    formImages[index] = formImages[index + 1];
+    formImages[index + 1] = temp;
+    renderFormImages();
+  }
+
   function renderFormImages() {
     if (!previewImagesContainer) return;
-    previewImagesContainer.innerHTML = formImages.map((url, idx) => `
-      <div class="preview-img-item" data-index="${idx}">
-        <img src="${escapeHtml(formatImageUrl(url))}" alt="Preview ${idx+1}" referrerpolicy="no-referrer">
-        <span class="remove-img-btn" data-action="remove-img" data-index="${idx}" title="Hapus Foto">&times;</span>
-      </div>
-    `).join('');
 
+    if (formImages.length === 0) {
+      previewImagesContainer.innerHTML = '';
+      return;
+    }
+
+    const lastIdx = formImages.length - 1;
+
+    previewImagesContainer.innerHTML = formImages.map((url, idx) => {
+      const isFront = (idx === lastIdx);
+      return `
+        <div class="preview-img-item ${isFront ? 'is-front' : ''}" data-index="${idx}" draggable="true" title="Klik foto untuk memotong (crop)">
+          ${isFront 
+            ? `<span class="badge-cover-front">⭐ Terdepan (Sampul)</span>` 
+            : `<span class="badge-img-order">#${idx + 1}</span>`
+          }
+          <span class="remove-img-btn" data-action="remove-img" data-index="${idx}" title="Hapus Foto">&times;</span>
+          <img src="${escapeHtml(formatImageUrl(url))}" alt="Preview ${idx+1}" referrerpolicy="no-referrer">
+          <span class="crop-hint-badge">✂️ Klik untuk Crop</span>
+          <div class="img-shift-bar" onclick="event.stopPropagation()">
+            <button type="button" class="btn-shift-img" data-action="shift-left" data-index="${idx}" ${idx === 0 ? 'disabled' : ''} title="Geser ke Kiri">◀</button>
+            <button type="button" class="btn-shift-img" data-action="shift-right" data-index="${idx}" ${idx === lastIdx ? 'disabled' : ''} title="Geser ke Kanan (Lebih Depan)">▶</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Remove buttons
     previewImagesContainer.querySelectorAll('[data-action="remove-img"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -569,6 +630,205 @@ document.addEventListener('DOMContentLoaded', () => {
         formImages.splice(index, 1);
         renderFormImages();
       });
+    });
+
+    // Shift left buttons
+    previewImagesContainer.querySelectorAll('[data-action="shift-left"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        moveImageLeft(index);
+      });
+    });
+
+    // Shift right buttons
+    previewImagesContainer.querySelectorAll('[data-action="shift-right"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(btn.getAttribute('data-index'), 10);
+        moveImageRight(index);
+      });
+    });
+
+    // Click item to Crop & Drag & Drop
+    previewImagesContainer.querySelectorAll('.preview-img-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.remove-img-btn') || e.target.closest('.img-shift-bar')) return;
+        const index = parseInt(item.getAttribute('data-index'), 10);
+        openCropper(index);
+      });
+
+      item.addEventListener('dragstart', (e) => {
+        draggedImageIndex = parseInt(item.getAttribute('data-index'), 10);
+        e.dataTransfer.effectAllowed = 'move';
+        item.style.opacity = '0.4';
+      });
+
+      item.addEventListener('dragend', () => {
+        item.style.opacity = '1';
+        draggedImageIndex = null;
+      });
+
+      item.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+
+      item.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const targetIndex = parseInt(item.getAttribute('data-index'), 10);
+        if (draggedImageIndex !== null && draggedImageIndex !== targetIndex) {
+          const moved = formImages.splice(draggedImageIndex, 1)[0];
+          formImages.splice(targetIndex, 0, moved);
+          renderFormImages();
+        }
+      });
+    });
+  }
+
+  // ==========================================
+  // IMAGE CROPPER LOGIC
+  // ==========================================
+  function openCropper(index) {
+    if (index < 0 || index >= formImages.length) return;
+    activeCroppingIndex = index;
+    const imgUrl = formImages[index];
+
+    const cleanUrl = formatImageUrl(imgUrl);
+    cropperImageElement.src = cleanUrl;
+
+    if (cropperModal) cropperModal.classList.add('active');
+
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+
+    const initCropper = () => {
+      if (typeof Cropper !== 'undefined') {
+        cropper = new Cropper(cropperImageElement, {
+          aspectRatio: 1, // 1:1 default
+          viewMode: 1,
+          autoCropArea: 0.9,
+          responsive: true,
+          restore: false,
+          checkCrossOrigin: false,
+        });
+      }
+    };
+
+    if (cropperImageElement.complete) {
+      initCropper();
+    } else {
+      cropperImageElement.onload = () => {
+        initCropper();
+        cropperImageElement.onload = null;
+      };
+    }
+  }
+
+  function closeCropper() {
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    activeCroppingIndex = null;
+    if (cropperModal) cropperModal.classList.remove('active');
+  }
+
+  if (btnCloseCropperModal) btnCloseCropperModal.addEventListener('click', closeCropper);
+  if (btnCancelCropper) btnCancelCropper.addEventListener('click', closeCropper);
+  if (cropperModal) {
+    cropperModal.addEventListener('click', (e) => {
+      if (e.target === cropperModal) closeCropper();
+    });
+  }
+
+  ratioButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      ratioButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const ratio = parseFloat(btn.getAttribute('data-ratio'));
+      if (cropper) {
+        cropper.setAspectRatio(isNaN(ratio) ? NaN : ratio);
+      }
+    });
+  });
+
+  if (btnCropperRotateLeft) {
+    btnCropperRotateLeft.addEventListener('click', () => {
+      if (cropper) cropper.rotate(-90);
+    });
+  }
+
+  if (btnCropperRotateRight) {
+    btnCropperRotateRight.addEventListener('click', () => {
+      if (cropper) cropper.rotate(90);
+    });
+  }
+
+  if (btnCropperReset) {
+    btnCropperReset.addEventListener('click', () => {
+      if (cropper) cropper.reset();
+    });
+  }
+
+  if (btnApplyCropper) {
+    btnApplyCropper.addEventListener('click', async () => {
+      if (!cropper || activeCroppingIndex === null) return;
+
+      btnApplyCropper.disabled = true;
+      btnApplyCropper.textContent = 'Memproses...';
+
+      try {
+        const canvas = cropper.getCroppedCanvas({
+          maxWidth: 1600,
+          maxHeight: 1600,
+          fillColor: '#fff',
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high',
+        });
+
+        if (!canvas) {
+          throw new Error('Gagal merender kanvas potongan gambar.');
+        }
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            btnApplyCropper.disabled = false;
+            btnApplyCropper.textContent = '✂️ Terapkan & Simpan Potongan';
+            showToast('Gagal memproses potongan foto.', 'error');
+            return;
+          }
+
+          const file = new File([blob], `cropped_${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const formData = new FormData();
+          formData.append('image', file);
+          showToast('Mengunggah hasil crop...', 'success');
+
+          try {
+            const response = await authFetch('../api/upload.php', { method: 'POST', body: formData });
+            const res = await response.json();
+            if (res.success && res.data?.url) {
+              formImages[activeCroppingIndex] = res.data.url;
+              renderFormImages();
+              closeCropper();
+              showToast('Foto berhasil dipotong (crop) dan diperbarui! ✨', 'success');
+            } else {
+              showToast(res.message || 'Gagal menyimpan hasil crop.', 'error');
+            }
+          } catch (err) {
+            showToast('Kesalahan upload crop: ' + err.message, 'error');
+          } finally {
+            btnApplyCropper.disabled = false;
+            btnApplyCropper.textContent = '✂️ Terapkan & Simpan Potongan';
+          }
+        }, 'image/jpeg', 0.92);
+      } catch (err) {
+        btnApplyCropper.disabled = false;
+        btnApplyCropper.textContent = '✂️ Terapkan & Simpan Potongan';
+        showToast('Gagal memproses crop: ' + err.message, 'error');
+      }
     });
   }
 
@@ -642,8 +902,8 @@ document.addEventListener('DOMContentLoaded', () => {
         full_desc: formFullDesc.value.trim(),
         video: formVideoUrl.value.trim(),
         sizes: getFormSizes(),
-        heights: getFormHeights(),
-        images: formImages.length > 0 ? formImages : [
+        heights: [],
+        images: formImages.length > 0 ? [...formImages].reverse() : [
           'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1000'
         ]
       };

@@ -578,12 +578,24 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
 
         <h4 style="color: #D4AF37; margin: 15px 0 5px;">2. Langkah Menghubungkan Google API (OAuth 2.0):</h4>
         <ol style="padding-left: 20px;">
-          <li>Buka <a href="https://console.cloud.google.com/" target="_blank" style="color: #ECC880;">Google Cloud Console</a>, buat project baru, dan aktifkan <strong>Google Sheets API</strong> & <strong>Google Drive API</strong>.</li>
-          <li>Buat OAuth Client ID (Web Application), dapatkan <strong>GOOGLE_CLIENT_ID</strong> dan <strong>GOOGLE_CLIENT_SECRET</strong>.</li>
-          <li>Dapatkan <strong>Refresh Token</strong> melalui <a href="https://developers.google.com/oauthplayground" target="_blank" style="color: #ECC880;">OAuth 2.0 Playground</a> dengan scope Sheets & Drive.</li>
+          <li>Buka <a href="https://console.cloud.google.com/" target="_blank" style="color: #ECC880;">Google Cloud Console</a>, pastikan project Anda aktif, dan aktifkan <strong>Google Sheets API</strong> &amp; <strong>Google Drive API</strong>.</li>
+          <li>Di menu <strong>APIs &amp; Services &gt; OAuth consent screen</strong>:
+            <ul style="margin: 4px 0 8px 16px; color: #facc15;">
+              <li><strong>PENTING:</strong> Klik tombol <strong>"PUBLISH APP"</strong> (Ubah Publishing Status dari <em>Testing</em> menjadi <em>In production</em>).</li>
+              <li>Jika status masih <em>Testing</em>, Google otomatis membatalkan/mencabut token setiap 7 hari!</li>
+            </ul>
+          </li>
+          <li>Di menu <strong>Credentials</strong>, buat OAuth Client ID (Web Application), dapatkan <strong>GOOGLE_CLIENT_ID</strong> dan <strong>GOOGLE_CLIENT_SECRET</strong>.</li>
+          <li>Buka <a href="https://developers.google.com/oauthplayground" target="_blank" style="color: #ECC880;">OAuth 2.0 Playground</a>:
+            <ul style="margin: 4px 0 8px 16px;">
+              <li>Klik ikon gerigi ⚙️ (kanan atas) &gt; centang <em>"Use your own OAuth credentials"</em> &gt; masukkan Client ID &amp; Client Secret Anda.</li>
+              <li>Pilih scope <code>https://www.googleapis.com/auth/spreadsheets</code> dan <code>https://www.googleapis.com/auth/drive</code> &gt; klik <em>Authorize APIs</em> &gt; izinkan login akun Google Anda.</li>
+              <li>Klik <em>"Exchange authorization code for tokens"</em> &gt; salin nilai <strong>Refresh token</strong> yang didapat.</li>
+            </ul>
+          </li>
           <li>Buat Spreadsheet kosong di Google Sheets dan ambil ID spreadsheet-nya dari URL.</li>
           <li>Buat folder kosong di Google Drive dan ambil ID foldernya dari URL.</li>
-          <li>Masukkan semua nilai tersebut ke dalam file <code>.env</code> Anda.</li>
+          <li>Masukkan semua nilai tersebut ke dalam <strong>Environment Variables di Vercel</strong> (dan file <code>.env</code> lokal Anda).</li>
         </ol>
       </div>
       <div class="modal-footer">

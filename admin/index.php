@@ -384,7 +384,7 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
         <div class="modal-body">
           <div class="form-grid-2">
             <div class="form-group">
-              <label for="formName" class="form-label">Nama Koleksi Bedcover *</label>
+              <label for="formName" class="form-label">Nama Produk*</label>
               <input type="text" id="formName" class="form-control" placeholder="Contoh: Imperial Champagne Gold Tencel 80s" required>
             </div>
 
@@ -415,7 +415,7 @@ $poCount = count(array_filter($products, fn($p) => str_contains(($p['status'] ??
 
           <!-- Pilihan Ukuran Bedcover (Format: Lebar x Panjang x Tinggi cm) -->
           <div class="form-group">
-            <label class="form-label">Pilihan Ukuran Bedcover Tersedia *</label>
+            <label class="form-label">Pilihan*</label>
             <div class="size-options-container" id="adminSizeSelector">
               <label class="size-checkbox-pill">
                 <input type="checkbox" name="product_sizes[]" value="120 x 200 x 40 cm">

@@ -860,7 +860,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .catalog-title {
   font-size: 1.8rem;
-  color: #FFFFFF;
+  color: var(--text-main);
 }
 
 .catalog-count-pill {

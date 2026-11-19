@@ -107,7 +107,8 @@ $googleClient = new GoogleClient();
 // If Drive API configured, upload to Google Drive
 if ($googleClient->isDriveConfigured()) {
     try {
-        $result = $googleClient->uploadImageToDrive($tmpPath, $fileName, $mimeType);
+        $driveMime = ($mimeType === 'video/quicktime') ? 'video/mp4' : $mimeType;
+        $result = $googleClient->uploadImageToDrive($tmpPath, $fileName, $driveMime);
         echo json_encode([
             'success' => true,
             'message' => $isVideo ? 'Video berhasil diunggah ke Google Drive! 🎥' : 'File berhasil diunggah ke Google Drive! ☁️',

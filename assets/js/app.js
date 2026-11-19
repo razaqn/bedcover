@@ -632,7 +632,10 @@ document.addEventListener('DOMContentLoaded', () => {
           ${hasVideo ? `
             <div class="modal-video-wrap">
               <div class="video-label">🎥 Video Dokumentasi Produk:</div>
-              <video src="${escapeHtml(p.video)}" controls playsinline></video>
+              <video controls playsinline preload="metadata">
+                <source src="${escapeHtml(formatImageUrl(p.video))}" type="video/mp4">
+                <source src="${escapeHtml(formatImageUrl(p.video))}" type="video/webm">
+              </video>
             </div>
           ` : ''}
         </div>

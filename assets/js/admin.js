@@ -206,7 +206,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function sortCategoriesAz() {
+    categories.sort((a, b) => {
+      const nameA = (is_array_obj(a) ? a.name : String(a)).trim();
+      const nameB = (is_array_obj(b) ? b.name : String(b)).trim();
+      return nameA.localeCompare(nameB, 'id', { sensitivity: 'base', numeric: true });
+    });
+  }
+
   function updateCategoryDropdowns() {
+    sortCategoriesAz();
     const catNames = categories.map(c => is_array_obj(c) ? c.name : String(c));
 
     // Admin filter dropdown
@@ -825,10 +834,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateVideoPreview(url) {
     if (!videoPreviewWrapper || !formVideoPlayer) return;
     if (url && url.trim() !== '') {
-      formVideoPlayer.src = url;
+      formVideoPlayer.src = formatImageUrl(url);
+      formVideoPlayer.load();
       videoPreviewWrapper.style.display = 'block';
     } else {
-      formVideoPlayer.src = '';
+      formVideoPlayer.pause();
+      formVideoPlayer.removeAttribute('src');
+      formVideoPlayer.load();
       videoPreviewWrapper.style.display = 'none';
     }
   }
@@ -960,6 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderCategoriesList() {
     if (!categoryItemsList) return;
+    sortCategoriesAz();
 
     categoryItemsList.innerHTML = categories.map(cat => {
       const catName = is_array_obj(cat) ? cat.name : String(cat);

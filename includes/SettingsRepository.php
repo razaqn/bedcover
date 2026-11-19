@@ -193,7 +193,19 @@ class SettingsRepository {
             }
         }
 
-        return $normalized;
+        return $this->sortCategoriesAlphabetically($normalized);
+    }
+
+    /**
+     * Sort categories alphabetically by name (A-Z, case-insensitive, natural order)
+     */
+    private function sortCategoriesAlphabetically(array $cats) {
+        usort($cats, function($a, $b) {
+            $nameA = is_array($a) ? ($a['name'] ?? '') : (string)$a;
+            $nameB = is_array($b) ? ($b['name'] ?? '') : (string)$b;
+            return strnatcasecmp(trim($nameA), trim($nameB));
+        });
+        return array_values($cats);
     }
 
     public function getCategories() {
@@ -214,7 +226,7 @@ class SettingsRepository {
                     }
                 }
                 if (!empty($cats)) {
-                    return $cats;
+                    return $this->sortCategoriesAlphabetically($cats);
                 }
             } catch (Exception $e) {
                 error_log("Error reading Categories from Sheet: " . $e->getMessage());
@@ -228,7 +240,7 @@ class SettingsRepository {
             }
         }
 
-        return $this->getDefaultCategories();
+        return $this->sortCategoriesAlphabetically($this->getDefaultCategories());
     }
 
     public function addCategory($categoryData) {
@@ -267,6 +279,7 @@ class SettingsRepository {
             'description' => $desc
         ];
 
+        $cats = $this->sortCategoriesAlphabetically($cats);
         $this->syncLocalCategories($cats);
         return $cats;
     }
@@ -349,6 +362,7 @@ class SettingsRepository {
             }
         }
 
+        $updatedCats = $this->sortCategoriesAlphabetically($updatedCats);
         $this->syncLocalCategories($updatedCats);
         return $updatedCats;
     }
